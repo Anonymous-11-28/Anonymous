@@ -1,0 +1,277 @@
+{
+  "destinations": [
+    {
+      "id": "1",
+      "name": "Bali Destination Guide",
+      "description": "Explore the beauty of Bali with our comprehensive guide.",
+      "image": "assets/bali_indonesia.jpg",
+      "history": "Bali is an island in Indonesia known for its tropical beaches and rich culture.",
+      "culture": "Bali has a rich tradition in music, dance, and art, deeply influenced by Hindu culture.",
+      "attractions": [
+        "Uluwatu Temple",
+        "Sacred Monkey Forest",
+        "Mount Agung"
+      ],
+      "lodging": [
+        "Luxury Resort",
+        "Budget Hostel",
+        "Private Villas"
+      ],
+      "dining": [
+        "Bali Cafe",
+        "Seafood Restaurant",
+        "Local Street Food"
+      ],
+      "activities": [
+        "Surfing",
+        "Snorkeling",
+        "Yoga Retreats"
+      ],
+      "reviews": [
+        {
+          "id": "1",
+          "destinationId": "1",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "2",
+          "destinationId": "1",
+          "userId": "54ba",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Paris Destination Guide",
+      "description": "Discover the magic of Paris, the City of Lights.",
+      "image": "assets/paris_logo.png",
+      "history": "Paris is known for its history of art, fashion, and culture, with iconic landmarks like the Eiffel Tower.",
+      "culture": "The culture of Paris has a rich history in the arts, literature, and fashion, attracting people worldwide.",
+      "attractions": [
+        "Eiffel Tower",
+        "Louvre Museum",
+        "Notre-Dame Cathedral"
+      ],
+      "lodging": [
+        "Luxury Hotels",
+        "Affordable Hostels",
+        "Boutique Hotels"
+      ],
+      "dining": [
+        "Le Meurice",
+        "Café de Flore",
+        "Street Crêpes"
+      ],
+      "activities": [
+        "Sightseeing",
+        "Museums",
+        "Shopping"
+      ],
+      "reviews": [
+        {
+          "id": "3",
+          "destinationId": "2",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "4",
+          "destinationId": "2",
+          "userId": "aa6b",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "",
+      "name": "hi",
+      "description": "g",
+      "image": "",
+      "history": "",
+      "culture": "",
+      "attractions": [],
+      "lodging": [],
+      "dining": [],
+      "activities": [],
+      "reviews": []
+    },
+    {
+      "id": "",
+      "name": "BZA",
+      "description": "Bezawada",
+      "image": "",
+      "history": "",
+      "culture": "",
+      "attractions": [],
+      "lodging": [],
+      "dining": [],
+      "activities": [],
+      "reviews": []
+    },
+    {
+      "id": "",
+      "name": "VGA",
+      "description": "vijayawada",
+      "image": "",
+      "history": "",
+      "culture": "",
+      "attractions": [],
+      "lodging": [],
+      "dining": [],
+      "activities": [],
+      "reviews": []
+    }
+  ],
+  "favorites": [
+    {
+      "userId": "6185",
+      "destinationIds": [
+        "1",
+        "2"
+      ],
+      "id": "dede"
+    }
+  ],
+  "viewDetails": [
+    {
+      "id": "123",
+      "destinationId": "1",
+      "title": "Bali Destination Guide",
+      "description": "Detailed information about Bali including history, culture, attractions, and recommendations.",
+      "reviews": [
+        {
+          "id": "1",
+          "destinationId": "1",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "2",
+          "destinationId": "1",
+          "userId": "54ba",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "124",
+      "destinationId": "2",
+      "title": "Paris Destination Guide",
+      "description": "Explore Paris with the most up-to-date details on history, culture, attractions, and local tips.",
+      "reviews": [
+        {
+          "id": "5",
+          "destinationId": "2",
+          "userId": "aa6b",
+          "rating": 5,
+          "text": "Fantastic guide, perfect for first-time visitors to Paris!"
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "6185",
+      "name": "Sanjeev",
+      "email": "sanjeev@mail.com",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "aa6b",
+      "name": "Lavanya",
+      "email": "lavanya@mail.com",
+      "password": "pandu",
+      "role": "user"
+    },
+    {
+      "id": "54ba",
+      "name": "Pratiksha",
+      "email": "pratiksha@mail.com",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "b89b",
+      "name": "Snehal",
+      "email": "snehal@mail.com",
+      "password": "007",
+      "role": "user"
+    }
+  ],
+  "admins": [
+    {
+      "id": "admin123",
+      "name": "Admin User",
+      "email": "admin@mail.com",
+      "password": "admin",
+      "role": "admin"
+    }
+  ],
+  "travelgroup": [
+    {
+      "groups": [
+        {
+          "id": "1",
+          "name": "Beach Lovers",
+          "description": "A group for people who love beaches and tropical vacations.",
+          "isPrivate": false,
+          "creatorId": "6185",
+          "members": [
+            "6185"
+          ],
+          "invitedUsers": []
+        },
+        {
+          "id": "2",
+          "name": "Mountain Explorers",
+          "description": "Adventure group for trekking and hiking in mountains.",
+          "isPrivate": true,
+          "creatorId": "6185",
+          "members": [
+            "6185"
+          ],
+          "invitedUsers": [
+            "1234"
+          ]
+        }
+      ],
+      "id": "5440"
+    }
+  ],
+  "itinerary": [
+    {
+      "id": "a189",
+      "destinationId": "1",
+      "attractions": [
+        "Sacred Monkey Forest"
+      ],
+      "lodging": [
+        "Luxury Resort"
+      ],
+      "dining": [
+        "Bali Cafe"
+      ],
+      "activities": [
+        "Surfing"
+      ],
+      "startDate": "2025-04-01",
+      "endDate": "2025-04-10"
+    },
+    {
+      "id": "38af",
+      "name": "hello",
+      "description": "hi",
+      "startDate": "2025-04-17",
+      "endDate": "2025-04-30"
+    }
+  ]
+}
