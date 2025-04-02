@@ -402,3 +402,102 @@ export class AdminItinerariesComponent implements OnInit {
     this.showForm = false;
   }
 }
+
+
+
+
+
+
+
+old ts 
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItineraryService } from '../../../services/admin-services/admin-itineraries.service';
+
+interface Itinerary {
+  id: string;
+  destinationId: string;
+  attractions: string[];
+  lodging: string[];
+  dining: string[];
+  activities: string[];
+  startDate: string;
+  endDate: string;
+}
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItineraryComponent implements OnInit {
+  itineraries: Itinerary[] = [];
+  showForm = false;
+  isEditing = false;
+  selectedItinerary: Itinerary = {
+    id: '',
+    destinationId: '',
+    attractions: [],
+    lodging: [],
+    dining: [],
+    activities: [],
+    startDate: '',
+    endDate: ''
+  };
+
+  constructor(private adminItineraryService: AdminItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.adminItineraryService.getItineraries().subscribe((data) => {
+      this.itineraries = data;
+    });
+  }
+
+  openAddForm(): void {
+    this.selectedItinerary = {
+      id: '',
+      destinationId: '',
+      attractions: [],
+      lodging: [],
+      dining: [],
+      activities: [],
+      startDate: '',
+      endDate: ''
+    };
+    this.isEditing = false;
+    this.showForm = true;
+  }
+
+  openEditForm(itinerary: Itinerary): void {
+    this.selectedItinerary = { ...itinerary };
+    this.isEditing = true;
+    this.showForm = true;
+  }
+
+  saveItinerary(): void {
+    if (this.isEditing) {
+      this.adminItineraryService.updateItinerary(this.selectedItinerary.id, this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    } else {
+      this.selectedItinerary.id = Math.random().toString(36).substr(2, 9); // Generate a random ID
+      this.adminItineraryService.addItinerary(this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    }
+  }
+
+  deleteItinerary(id: string): void {
+    this.adminItineraryService.deleteItinerary(id).subscribe(() => {
+      this.itineraries = this.itineraries.filter(itinerary => itinerary.id !== id);
+    });
+  }
+}
