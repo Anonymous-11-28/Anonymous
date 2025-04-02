@@ -154,3 +154,114 @@ export class AdminItineraryService {
   }
 }
 
+
+
+
+
+
+service 
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItineraryService {
+  private apiUrl = 'http://localhost:3000/itineraries'; // Check URL
+
+  constructor(private http: HttpClient) {}
+
+  getItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  deleteItinerary(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}
+
+
+
+ts 
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItineraryService } from '../services/admin-itinerary.service';
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItinerariesComponent implements OnInit {
+  itineraries: any[] = [];
+  errorMessage: string = '';
+
+  constructor(private itineraryService: AdminItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.itineraryService.getItineraries().subscribe({
+      next: (data) => {
+        this.itineraries = data;
+      },
+      error: (error) => {
+        this.errorMessage = 'Error fetching itineraries';
+        console.error(error);
+      }
+    });
+  }
+
+  deleteItinerary(id: string): void {
+    this.itineraryService.deleteItinerary(id).subscribe({
+      next: () => {
+        this.itineraries = this.itineraries.filter(itinerary => itinerary.id !== id);
+      },
+      error: (error) => {
+        console.error('Error deleting itinerary:', error);
+      }
+    });
+  }
+}
+
+HTML 
+
+
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+<table *ngIf="itineraries.length > 0" class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Destination</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let itinerary of itineraries">
+      <td>{{ itinerary.id }}</td>
+      <td>{{ itinerary.destinationId }}</td>
+      <td>{{ itinerary.startDate }}</td>
+      <td>{{ itinerary.endDate }}</td>
+      <td>
+        <button (click)="deleteItinerary(itinerary.id)" class="btn btn-danger">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="itineraries.length === 0">No itineraries found.</p>
+
