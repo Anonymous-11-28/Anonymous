@@ -177,3 +177,52 @@ export class ItineraryService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }
+
+
+
+iternaries html
+
+
+<div class="container">
+  <h2>Itineraries</h2>
+
+  <button class="btn btn-primary" (click)="openAddEditForm()">Add Itinerary</button>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="isLoading" class="text-center">
+    <p>Loading...</p>
+  </div>
+
+  <ul class="list-group mt-3" *ngIf="!(isLoading || errorMessage)">
+    <li *ngFor="let itinerary of itineraries$ | async" class="list-group-item d-flex justify-content-between align-items-center">
+      {{ itinerary.destination }}
+      <div>
+        <button class="btn btn-sm btn-info" (click)="openAddEditForm(itinerary)">Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteItinerary(itinerary.id)">Delete</button>
+      </div>
+    </li>
+  </ul>
+
+  <div *ngIf="selectedItinerary !== null || itineraryForm.dirty">
+    <h3>{{ isEditing ? 'Edit' : 'Add' }} Itinerary</h3>
+    <form [formGroup]="itineraryForm" (ngSubmit)="saveItinerary()">
+      <div class="form-group">
+        <label>Destination</label>
+        <input formControlName="destination" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label>Start Date</label>
+        <input formControlName="startDate" type="date" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label>End Date</label>
+        <input formControlName="endDate" type="date" class="form-control" required />
+      </div>
+
+      <button class="btn btn-success mt-3" type="submit">Save</button>
+    </form>
+  </div>
+</div>
