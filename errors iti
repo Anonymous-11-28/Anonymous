@@ -501,3 +501,104 @@ export class AdminItineraryComponent implements OnInit {
     });
   }
 }
+
+
+
+
+updated ts
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItineraryService } from '../../../services/admin-services/admin-itineraries.service';
+
+interface Itinerary {
+  id: string;
+  destinationId: string;
+  attractions: string[];
+  lodging: string[];
+  dining: string[];
+  activities: string[];
+  startDate: string;
+  endDate: string;
+}
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItinerariesComponent implements OnInit {
+  itineraries: Itinerary[] = [];
+  showForm = false;
+  isEditing = false;
+  selectedItinerary: Itinerary = this.getEmptyItinerary();
+
+  constructor(private adminItineraryService: AdminItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  // Load itineraries from service
+  loadItineraries(): void {
+    this.adminItineraryService.getItineraries().subscribe((data) => {
+      this.itineraries = data;
+    });
+  }
+
+  // Open Add Form
+  openAddForm(): void {
+    this.selectedItinerary = this.getEmptyItinerary();
+    this.isEditing = false;
+    this.showForm = true;
+  }
+
+  // Open Edit Form
+  openEditForm(itinerary: Itinerary): void {
+    this.selectedItinerary = { ...itinerary };
+    this.isEditing = true;
+    this.showForm = true;
+  }
+
+  // Save or Update Itinerary
+  saveItinerary(): void {
+    if (this.isEditing) {
+      this.adminItineraryService.updateItinerary(this.selectedItinerary.id, this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    } else {
+      this.selectedItinerary.id = Math.random().toString(36).substr(2, 9); // Generate a random ID
+      this.adminItineraryService.addItinerary(this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    }
+  }
+
+  // Delete Itinerary
+  deleteItinerary(id: string): void {
+    this.adminItineraryService.deleteItinerary(id).subscribe(() => {
+      this.itineraries = this.itineraries.filter(itinerary => itinerary.id !== id);
+    });
+  }
+
+  // Close Form
+  closeForm(): void {
+    this.showForm = false;
+  }
+
+  // Helper: Get Empty Itinerary Object
+  private getEmptyItinerary(): Itinerary {
+    return {
+      id: '',
+      destinationId: '',
+      attractions: [],
+      lodging: [],
+      dining: [],
+      activities: [],
+      startDate: '',
+      endDate: ''
+    };
+  }
+}
+
