@@ -266,72 +266,80 @@ export class AdminItineraryService {
 css
 
 .container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
 h2 {
-  text-align: center;
-  color: #333;
+    text-align: center;
+    color: #222;
+    font-size: 24px;
+    margin-bottom: 20px;
 }
 
 button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  margin: 5px;
-  cursor: pointer;
-  border-radius: 5px;
+    display: inline-block;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
-}
-
-.delete-btn {
-  background-color: #dc3545;
-}
-
-.delete-btn:hover {
-  background-color: #a71d2a;
+    background: linear-gradient(135deg, #0056b3, #003f7f);
+    transform: scale(1.05);
 }
 
 ul {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 li {
-  background: white;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin: 15px 0;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-container {
-  background: #fff;
-  padding: 15px;
-  margin-top: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-label {
-  display: block;
-  margin-top: 10px;
+.itinerary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #444;
 }
 
-input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.itinerary-details {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    button {
+        width: 100%;
+    }
 }
