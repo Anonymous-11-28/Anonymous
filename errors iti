@@ -1,3 +1,47 @@
+errors
+
+Error: src/app/components/admin-components/admin-itineraries/admin-itineraries.component.html:39:26 - error TS2339: Property 'itineraryForm' does not exist on type 'AdminItineraryComponent'.
+
+39       <form [formGroup]="itineraryForm" (ngSubmit)="saveItinerary()">
+                            ~~~~~~~~~~~~~
+
+  src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:17:16
+    17   templateUrl: './admin-itineraries.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AdminItineraryComponent.
+
+
+Error: src/app/components/admin-components/admin-itineraries/admin-itineraries.component.html:62:40 - error TS2339: Property 'closeForm' does not exist on type 'AdminItineraryComponent'.
+
+62         <button type="button" (click)="closeForm()" class="cancel-btn">Cancel</button>
+                                          ~~~~~~~~~
+
+  src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:17:16
+    17   templateUrl: './admin-itineraries.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AdminItineraryComponent.
+
+
+
+
+× Failed to compile.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  openAddForm(): void {
     this.selectedItinerary = { id: '', startDate: '', endDate: '' };
     this.isEditing = false;
