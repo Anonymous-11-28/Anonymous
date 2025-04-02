@@ -116,3 +116,222 @@ export class ItineraryService {
   }
 }
 
+
+
+
+HTML5 
+
+
+
+<div class="container">
+  <h2>Manage Itineraries</h2>
+
+  <!-- Button to open Add Itinerary form -->
+  <button (click)="openAddForm()">Add New Itinerary</button>
+
+  <!-- Add/Edit Itinerary Form -->
+  <div *ngIf="showForm" class="form-container">
+    <h3>{{ isEditing ? 'Edit Itinerary' : 'Add New Itinerary' }}</h3>
+
+    <label>Start Date:</label>
+    <input type="date" [(ngModel)]="selectedItinerary.startDate" />
+
+    <label>End Date:</label>
+    <input type="date" [(ngModel)]="selectedItinerary.endDate" />
+
+    <button (click)="saveItinerary()">{{ isEditing ? 'Update' : 'Save' }}</button>
+    <button (click)="cancelForm()">Cancel</button>
+  </div>
+
+  <!-- List of itineraries -->
+  <ul>
+    <li *ngFor="let itinerary of itineraries">
+      <h3>Itinerary ID: {{ itinerary.id }}</h3>
+      <p><strong>Start Date:</strong> {{ itinerary.startDate }}</p>
+      <p><strong>End Date:</strong> {{ itinerary.endDate }}</p>
+
+      <button (click)="editItinerary(itinerary)">Edit</button>
+      <button (click)="deleteItinerary(itinerary.id)" class="delete-btn">Delete</button>
+    </li>
+  </ul>
+</div>
+
+
+ts
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItineraryService } from '../services/admin-itinerary.service';
+
+@Component({
+  selector: 'app-admin-itinerary',
+  templateUrl: './admin-itinerary.component.html',
+  styleUrls: ['./admin-itinerary.component.css']
+})
+export class AdminItineraryComponent implements OnInit {
+  itineraries: any[] = [];
+  showForm: boolean = false;
+  isEditing: boolean = false;
+  selectedItinerary: any = { id: '', startDate: '', endDate: '' };
+
+  constructor(private itineraryService: AdminItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.itineraryService.getItineraries().subscribe(data => {
+      this.itineraries = data;
+    });
+  }
+
+  openAddForm(): void {
+    this.selectedItinerary = { id: '', startDate: '', endDate: '' };
+    this.isEditing = false;
+    this.showForm = true;
+  }
+
+  editItinerary(itinerary: any): void {
+    this.selectedItinerary = { ...itinerary };
+    this.isEditing = true;
+    this.showForm = true;
+  }
+
+  saveItinerary(): void {
+    if (this.isEditing) {
+      this.itineraryService.updateItinerary(this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    } else {
+      this.selectedItinerary.id = Math.random().toString(36).substr(2, 9); // Generate random ID
+      this.itineraryService.addItinerary(this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    }
+  }
+
+  deleteItinerary(id: string): void {
+    this.itineraryService.deleteItinerary(id).subscribe(() => {
+      this.loadItineraries();
+    });
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+  }
+}
+
+service 
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItineraryService {
+  private apiUrl = 'http://localhost:3000/itinerary'; // JSON Server API URL
+
+  constructor(private http: HttpClient) {}
+
+  // Fetch all itineraries
+  getItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  // Add new itinerary
+  addItinerary(itinerary: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, itinerary);
+  }
+
+  // Update an existing itinerary
+  updateItinerary(itinerary: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${itinerary.id}`, itinerary);
+  }
+
+  // Delete an itinerary
+  deleteItinerary(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
+}
+
+
+css
+
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+.delete-btn:hover {
+  background-color: #a71d2a;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: white;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+  background: #fff;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
