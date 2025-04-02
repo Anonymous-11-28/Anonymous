@@ -97,10 +97,20 @@ button:hover {
 service 
 
 
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+export interface Itinerary {
+  id: string;
+  destinationId: string;
+  attractions: string[];
+  lodging: string[];
+  dining: string[];
+  activities: string[];
+  startDate: string;
+  endDate: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -110,18 +120,23 @@ export class AdminItineraryService {
 
   constructor(private http: HttpClient) {}
 
-  getAdminItineraries(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getAdminItineraries(): Observable<Itinerary[]> {
+    return this.http.get<Itinerary[]>(this.apiUrl);
+  }
+
+  createItinerary(itinerary: Itinerary): Observable<Itinerary> {
+    return this.http.post<Itinerary>(this.apiUrl, itinerary);
+  }
+
+  updateItinerary(id: string, itinerary: Partial<Itinerary>): Observable<Itinerary> {
+    return this.http.put<Itinerary>(`${this.apiUrl}/${id}`, itinerary);
   }
 
   deleteItinerary(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-
-  updateItinerary(id: string, itinerary: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, itinerary);
-  }
 }
+
 
 ts
 
