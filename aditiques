@@ -1,0 +1,915 @@
+4. Manage Itineraries Component
+Purpose: Admins can manage trip itineraries, including add, edit, and delete itineraries.
+
+Functionality:
+
+List all itineraries.
+
+Provide buttons to Add New Itinerary, Edit, and Delete an existing itinerary.
+
+The itineraries should include details like day-wise plans, activities, and locations.
+
+Name: AdminItinerariesComponent
+
+
+
+admin-itineraries.component.html
+
+<div class="itinerary-container">
+  <h1>Manage Itineraries</h1>
+
+  <!-- Add New Itinerary Button -->
+  <button class="add-itinerary-btn" (click)="openAddEditForm()">Add New Itinerary</button>
+
+  <!-- Add/Edit Itinerary Form -->
+  <div *ngIf="showAddEditForm" class="itinerary-form">
+    <h2>{{ isEditMode ? 'Edit' : 'Add' }} Itinerary</h2>
+
+    <form [formGroup]="itineraryForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Itinerary Name:</label>
+        <input id="name" formControlName="name" type="text" class="form-control" />
+        <div *ngIf="isInvalid('name')" class="error-message">Name is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Itinerary Description:</label>
+        <textarea id="description" formControlName="description" class="form-control"></textarea>
+        <div *ngIf="isInvalid('description')" class="error-message">Description is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="startDate">Start Date:</label>
+        <input id="startDate" formControlName="startDate" type="date" class="form-control" />
+        <div *ngIf="isInvalid('startDate')" class="error-message">Start date is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="endDate">End Date:</label>
+        <input id="endDate" formControlName="endDate" type="date" class="form-control" />
+        <div *ngIf="isInvalid('endDate')" class="error-message">End date is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="destinationId">Destination:</label>
+        <select id="destinationId" formControlName="destinationId" class="form-control">
+          <option *ngFor="let destination of destinations" [value]="destination.id">
+            {{ destination.name }}
+          </option>
+        </select>
+        <div *ngIf="isInvalid('destinationId')" class="error-message">Destination is required.</div>
+      </div>
+
+      <!-- Attractions FormArray -->
+      <div formArrayName="attractions">
+        <div *ngFor="let attraction of (itineraryForm.get('attractions') as FormArray).controls; let i = index">
+          <div class="form-group">
+            <label for="attraction-{{i}}">Attraction:</label>
+            <input [formControlName]="i" id="attraction-{{i}}" class="form-control" placeholder="Attraction" />
+            <button type="button" (click)="removeItem('attractions', i)" class="remove-btn" aria-label="Remove Attraction">Remove</button>
+          </div>
+        </div>
+        <button type="button" (click)="addItem('attractions')" class="add-item-btn">Add Attraction</button>
+      </div>
+
+      <!-- Lodging FormArray -->
+      <div formArrayName="lodging">
+        <div *ngFor="let lodge of (itineraryForm.get('lodging') as FormArray).controls; let i = index">
+          <div class="form-group">
+            <label for="lodging-{{i}}">Lodging:</label>
+            <input [formControlName]="i" id="lodging-{{i}}" class="form-control" placeholder="Lodging" />
+            <button type="button" (click)="removeItem('lodging', i)" class="remove-btn" aria-label="Remove Lodging">Remove</button>
+          </div>
+        </div>
+        <button type="button" (click)="addItem('lodging')" class="add-item-btn">Add Lodging</button>
+      </div>
+
+      <!-- Dining FormArray -->
+      <div formArrayName="dining">
+        <div *ngFor="let dine of (itineraryForm.get('dining') as FormArray).controls; let i = index">
+          <div class="form-group">
+            <label for="dining-{{i}}">Dining:</label>
+            <input [formControlName]="i" id="dining-{{i}}" class="form-control" placeholder="Dining" />
+            <button type="button" (click)="removeItem('dining', i)" class="remove-btn" aria-label="Remove Dining">Remove</button>
+          </div>
+        </div>
+        <button type="button" (click)="addItem('dining')" class="add-item-btn">Add Dining</button>
+      </div>
+
+      <!-- Activities FormArray -->
+      <div formArrayName="activities">
+        <div *ngFor="let activity of (itineraryForm.get('activities') as FormArray).controls; let i = index">
+          <div class="form-group">
+            <label for="activity-{{i}}">Activity:</label>
+            <input [formControlName]="i" id="activity-{{i}}" class="form-control" placeholder="Activity" />
+            <button type="button" (click)="removeItem('activities', i)" class="remove-btn" aria-label="Remove Activity">Remove</button>
+          </div>
+        </div>
+        <button type="button" (click)="addItem('activities')" class="add-item-btn">Add Activity</button>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="itineraryForm.invalid" class="submit-btn">Submit</button>
+        <button type="button" (click)="closeForm()" class="cancel-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Itinerary List -->
+  <div *ngIf="itineraries$ | async as itineraries; else loading" class="itinerary-list">
+    <div *ngFor="let itinerary of itineraries" class="itinerary-item">
+      <h2>{{ itinerary.name }}</h2>
+      <p>{{ itinerary.description }}</p>
+      <div class="itinerary-actions">
+        <button (click)="openAddEditForm(itinerary)">Edit</button>
+        <button (click)="deleteItinerary(itinerary.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Itinerary Available Message -->
+  <div *ngIf="itineraries?.length === 0" class="no-itinerary-msg">
+    <p>No itineraries available.</p>
+  </div>
+
+  <!-- Loading Spinner or Message -->
+  <ng-template #loading>
+    <div>Loading itineraries...</div>
+  </ng-template>
+
+  <!-- Error Message (if any) -->
+  <!-- <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div> -->
+</div>
+
+
+
+admin-itineraries.component.ts
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItinerariesService } from '../../../services/admin-services/admin-itineraries.service';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItinerariesComponent implements OnInit {
+  itineraries$: Observable<any[]> = new Observable<any[]>(); // Initialize the observable
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  showAddEditForm: boolean = false;
+  isEditMode: boolean = false;
+  selectedItineraryId: string | null = null;
+  itineraryForm: FormGroup;
+
+  constructor(
+    private itineraryService: AdminItinerariesService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    // Initialize form group in the constructor
+    this.itineraryForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      destinationId: ['', Validators.required],
+      attractions: this.fb.array([]),
+      lodging: this.fb.array([]),
+      dining: this.fb.array([]),
+      activities: this.fb.array([]),
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.isLoading = true;
+    this.itineraries$ = this.itineraryService.getItineraries();
+    this.itineraries$.subscribe(
+      (data) => {
+        this.isLoading = false;
+      },
+      (error) => {
+        this.errorMessage = 'Error loading itineraries. Please try again later.';
+        this.isLoading = false;
+      }
+    );
+  }
+
+  openAddEditForm(itinerary?: any): void {
+    this.showAddEditForm = true;
+    this.isEditMode = !!itinerary;
+    if (itinerary) {
+      this.selectedItineraryId = itinerary.id;
+      this.itineraryForm.patchValue({
+        name: itinerary.name,
+        description: itinerary.description,
+        startDate: itinerary.startDate,
+        endDate: itinerary.endDate,
+        destinationId: itinerary.destinationId,
+      });
+
+      this.setArrayControls('attractions', itinerary.attractions);
+      this.setArrayControls('lodging', itinerary.lodging);
+      this.setArrayControls('dining', itinerary.dining);
+      this.setArrayControls('activities', itinerary.activities);
+    } else {
+      this.selectedItineraryId = null;
+      this.itineraryForm.reset();
+    }
+  }
+
+  setArrayControls(controlName: string, values: any[]): void {
+    const controlArray = this.itineraryForm.get(controlName) as FormArray;
+    if (controlArray) {
+      controlArray.clear();  // Clear existing controls
+      values.forEach(value => {
+        controlArray.push(this.fb.control(value));
+      });
+    }
+  }
+
+  onSubmit(): void {
+    if (this.itineraryForm.invalid) {
+      return;
+    }
+
+    const itinerary = this.itineraryForm.value;
+
+    if (this.isEditMode) {
+      this.itineraryService.updateItinerary(this.selectedItineraryId!, itinerary).subscribe(
+        (response) => {
+          this.loadItineraries();
+          this.showAddEditForm = false;
+        },
+        (error) => {
+          this.errorMessage = 'Error updating itinerary. Please try again later.';
+        }
+      );
+    } else {
+      this.itineraryService.addItinerary(itinerary).subscribe(
+        (response) => {
+          this.loadItineraries();
+          this.showAddEditForm = false;
+        },
+        (error) => {
+          this.errorMessage = 'Error adding itinerary. Please try again later.';
+        }
+      );
+    }
+  }
+
+  deleteItinerary(itineraryId: string): void {
+    this.itineraryService.deleteItinerary(itineraryId).subscribe(
+      (response) => {
+        this.loadItineraries();
+      },
+      (error) => {
+        this.errorMessage = 'Error deleting itinerary. Please try again later.';
+      }
+    );
+  }
+
+  addItem(controlName: string): void {
+    const controlArray = this.itineraryForm.get(controlName) as FormArray;
+    controlArray.push(this.fb.control(''));
+  }
+
+  removeItem(controlName: string, index: number): void {
+    const controlArray = this.itineraryForm.get(controlName) as FormArray;
+    controlArray.removeAt(index);
+  }
+
+  isInvalid(controlName: string): boolean {
+    const control = this.itineraryForm.get(controlName);
+    return !!control?.invalid && !!control?.touched;  // Ensures a boolean return
+  }
+  
+  closeForm(): void {
+    this.showAddEditForm = false;
+  }
+}
+
+
+
+
+css file:
+
+/* General Container Styles */
+.itinerary-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Add Itinerary Button */
+.add-itinerary-btn {
+  margin-bottom: 20px;
+  padding: 12px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.add-itinerary-btn:hover {
+  background-color: #45a049;
+}
+
+/* Itinerary List Styles */
+.itinerary-list {
+  margin-top: 20px;
+}
+
+.itinerary-item {
+  background: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.itinerary-item:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.itinerary-item h2 {
+  font-size: 1.6em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.itinerary-item p {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+/* Itinerary Actions (Edit/Delete Buttons) */
+.itinerary-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.itinerary-actions button {
+  padding: 8px 15px;
+  font-size: 1.1em;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  width: auto;
+}
+
+.itinerary-actions button:first-child {
+  background-color: #007bff;
+  color: white;
+}
+
+.itinerary-actions button:first-child:hover {
+  background-color: #0056b3;
+}
+
+.itinerary-actions button:last-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.itinerary-actions button:last-child:hover {
+  background-color: #e53935;
+}
+
+/* No Itinerary Available Message */
+.no-itinerary-msg {
+  text-align: center;
+  color: #757575;
+  font-size: 1.2em;
+  margin-top: 40px;
+  font-style: italic;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  text-align: center;
+  font-size: 1.3em;
+  color: #007bff;
+  margin-top: 30px;
+}
+
+/* Error Message Styling */
+.error-message {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+
+/* Form Styling */
+.itinerary-form {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.itinerary-form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.itinerary-form input,
+.itinerary-form textarea,
+.itinerary-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 1em;
+}
+
+.itinerary-form button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  width: 100%;
+  display: inline-block;
+}
+
+.itinerary-form button:hover {
+  background-color: #45a049;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
+
+.cancel-btn:hover {
+  background-color: #e53935;
+}
+
+/* Dynamic Form Arrays Styling (Attractions, Lodging, Dining, Activities) */
+.itinerary-form .form-group {
+  margin-bottom: 20px;
+}
+
+.itinerary-form .form-group input,
+.itinerary-form .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.itinerary-form .form-group button {
+  margin-top: 5px;
+  padding: 6px 12px;
+  font-size: 0.9em;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.add-item-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.add-item-btn:hover {
+  background-color: #0056b3;
+}
+
+.remove-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.remove-btn:hover {
+  background-color: #e53935;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .itinerary-container {
+    padding: 15px;
+  }
+
+  .add-itinerary-btn {
+    font-size: 1em;
+  }
+
+  .itinerary-item h2 {
+    font-size: 1.4em;
+  }
+
+  .itinerary-item p {
+    font-size: 1em;
+  }
+
+  .itinerary-actions button {
+    font-size: 1em;
+    padding: 6px 12px;
+  }
+
+  .itinerary-form button {
+    font-size: 1em;
+  }
+
+  .itinerary-form input,
+  .itinerary-form textarea,
+  .itinerary-form select {
+    padding: 10px;
+  }
+
+  .form-group button {
+    padding: 5px 10px;
+  }
+}
+
+
+
+
+service::
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItinerariesService {
+  private apiUrl = 'http://localhost:3000/itinerary'; // API URL for itineraries
+
+  constructor(private http: HttpClient) {}
+
+  // Get all itineraries
+  getItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(response => response), // Modify this if the response has a wrapper
+      catchError(this.handleError)
+    );
+  }
+
+  // Add a new itinerary
+  addItinerary(itinerary: any): Observable<any> {
+    console.log('Sending POST request to add itinerary:', itinerary);  // Add debug logging
+    return this.http.post<any>(this.apiUrl, itinerary).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Edit an existing itinerary
+  updateItinerary(itineraryId: string, itinerary: any): Observable<any> {
+    console.log('Sending PUT request to update itinerary with ID:', itineraryId, itinerary); // Add debug logging
+    return this.http.put<any>(`${this.apiUrl}/${itineraryId}`, itinerary).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Delete an itinerary
+  deleteItinerary(itineraryId: string): Observable<any> {
+    console.log('Sending DELETE request for itinerary with ID:', itineraryId); // Add debug logging
+    return this.http.delete<any>(`${this.apiUrl}/${itineraryId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Error handling function
+  private handleError(error: any): Observable<never> {
+    let errorMessage = 'Something went wrong, please try again later.';
+    
+    if (error.error instanceof ErrorEvent) {
+      // Client-side or network error occurred
+      console.error('Client-side error:', error.error.message);
+      errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      // Backend error occurred
+      console.error(`Backend error: ${error.status}, body was: ${error.error}`);
+      errorMessage = `Backend error: ${error.status}, ${error.error?.message || 'Unknown error'}`;
+    }
+
+    // Display a user-friendly message (can be improved to show in UI)
+    return throwError(() => new Error(errorMessage));
+  }
+}
+
+
+db:
+
+{
+  "destinations": [
+    {
+      "id": "1",
+      "name": "Bali Destination Guide",
+      "description": "Explore the beauty of Bali with our comprehensive guide.",
+      "image": "assets/bali_indonesia.jpg",
+      "history": "Bali is an island in Indonesia known for its tropical beaches and rich culture.",
+      "culture": "Bali has a rich tradition in music, dance, and art, deeply influenced by Hindu culture.",
+      "attractions": [
+        "Uluwatu Temple",
+        "Sacred Monkey Forest",
+        "Mount Agung"
+      ],
+      "lodging": [
+        "Luxury Resort",
+        "Budget Hostel",
+        "Private Villas"
+      ],
+      "dining": [
+        "Bali Cafe",
+        "Seafood Restaurant",
+        "Local Street Food"
+      ],
+      "activities": [
+        "Surfing",
+        "Snorkeling",
+        "Yoga Retreats"
+      ],
+      "reviews": [
+        {
+          "id": "1",
+          "destinationId": "1",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "2",
+          "destinationId": "1",
+          "userId": "54ba",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Paris Destination Guide",
+      "description": "Discover the magic of Paris, the City of Lights.",
+      "image": "assets/paris_logo.png",
+      "history": "Paris is known for its history of art, fashion, and culture, with iconic landmarks like the Eiffel Tower.",
+      "culture": "The culture of Paris has a rich history in the arts, literature, and fashion, attracting people worldwide.",
+      "attractions": [
+        "Eiffel Tower",
+        "Louvre Museum",
+        "Notre-Dame Cathedral"
+      ],
+      "lodging": [
+        "Luxury Hotels",
+        "Affordable Hostels",
+        "Boutique Hotels"
+      ],
+      "dining": [
+        "Le Meurice",
+        "Café de Flore",
+        "Street Crêpes"
+      ],
+      "activities": [
+        "Sightseeing",
+        "Museums",
+        "Shopping"
+      ],
+      "reviews": [
+        {
+          "id": "3",
+          "destinationId": "2",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "4",
+          "destinationId": "2",
+          "userId": "aa6b",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "",
+      "name": "hi",
+      "description": "g",
+      "image": "",
+      "history": "",
+      "culture": "",
+      "attractions": [],
+      "lodging": [],
+      "dining": [],
+      "activities": [],
+      "reviews": []
+    },
+    {
+      "id": "",
+      "name": "BZA",
+      "description": "Bezawada",
+      "image": "",
+      "history": "",
+      "culture": "",
+      "attractions": [],
+      "lodging": [],
+      "dining": [],
+      "activities": [],
+      "reviews": []
+    },
+    {
+      "id": "",
+      "name": "VGA",
+      "description": "vijayawada",
+      "image": "",
+      "history": "",
+      "culture": "",
+      "attractions": [],
+      "lodging": [],
+      "dining": [],
+      "activities": [],
+      "reviews": []
+    }
+  ],
+  "favorites": [
+    {
+      "userId": "6185",
+      "destinationIds": [
+        "1",
+        "2"
+      ],
+      "id": "dede"
+    }
+  ],
+  "viewDetails": [
+    {
+      "id": "123",
+      "destinationId": "1",
+      "title": "Bali Destination Guide",
+      "description": "Detailed information about Bali including history, culture, attractions, and recommendations.",
+      "reviews": [
+        {
+          "id": "1",
+          "destinationId": "1",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "2",
+          "destinationId": "1",
+          "userId": "54ba",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "124",
+      "destinationId": "2",
+      "title": "Paris Destination Guide",
+      "description": "Explore Paris with the most up-to-date details on history, culture, attractions, and local tips.",
+      "reviews": [
+        {
+          "id": "5",
+          "destinationId": "2",
+          "userId": "aa6b",
+          "rating": 5,
+          "text": "Fantastic guide, perfect for first-time visitors to Paris!"
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "6185",
+      "name": "Sanjeev",
+      "email": "sanjeev@mail.com",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "aa6b",
+      "name": "Lavanya",
+      "email": "lavanya@mail.com",
+      "password": "pandu",
+      "role": "user"
+    },
+    {
+      "id": "54ba",
+      "name": "Pratiksha",
+      "email": "pratiksha@mail.com",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "b89b",
+      "name": "Snehal",
+      "email": "snehal@mail.com",
+      "password": "007",
+      "role": "user"
+    }
+  ],
+  "admins": [
+    {
+      "id": "admin123",
+      "name": "Admin User",
+      "email": "admin@mail.com",
+      "password": "admin",
+      "role": "admin"
+    }
+  ],
+  "travelgroup": [
+    {
+      "groups": [
+        {
+          "id": "1",
+          "name": "Beach Lovers",
+          "description": "A group for people who love beaches and tropical vacations.",
+          "isPrivate": false,
+          "creatorId": "6185",
+          "members": [
+            "6185"
+          ],
+          "invitedUsers": []
+        },
+        {
+          "id": "2",
+          "name": "Mountain Explorers",
+          "description": "Adventure group for trekking and hiking in mountains.",
+          "isPrivate": true,
+          "creatorId": "6185",
+          "members": [
+            "6185"
+          ],
+          "invitedUsers": [
+            "1234"
+          ]
+        }
+      ],
+      "id": "5440"
+    }
+  ],
+  "itinerary": [
+    {
+      "id": "a189",
+      "destinationId": "1",
+      "attractions": [
+        "Sacred Monkey Forest"
+      ],
+      "lodging": [
+        "Luxury Resort"
+      ],
+      "dining": [
+        "Bali Cafe"
+      ],
+      "activities": [
+        "Surfing"
+      ],
+      "startDate": "2025-04-01",
+      "endDate": "2025-04-10"
+    },
+    {
+      "id": "38af",
+      "name": "hello",
+      "description": "hi",
+      "startDate": "2025-04-17",
+      "endDate": "2025-04-30"
+    }
+  ]
+}
