@@ -28,6 +28,23 @@ Error: src/app/components/admin-components/admin-itineraries/admin-itineraries.c
 
 
 
+again errors
+
+
+Compiled with problems:X
+
+ERROR
+
+src/app/components/admin-components/admin-itineraries/admin-itineraries.component.html:39:26 - error TS2339: Property 'itineraryForm' does not exist on type 'AdminItinerariesComponent'.
+
+39       <form [formGroup]="itineraryForm" (ngSubmit)="saveItinerary()">
+                            ~~~~~~~~~~~~~
+
+  src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:17:16
+    17   templateUrl: './admin-itineraries.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AdminItinerariesComponent.
+
 
 
 
