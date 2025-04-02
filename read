@@ -61,3 +61,78 @@ export class AdminItinerariesService {
     return throwError(() => new Error(errorMessage));
   }
 }
+
+
+services
+
+
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+// Define an interface for strong typing
+export interface Itinerary {
+  id?: string; // Optional for new itineraries
+  title: string;
+  description: string;
+  destination: string;
+  startDate: string; // Use Date if needed
+  endDate: string;   // Use Date if needed
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItinerariesService {
+  private apiUrl = 'http://localhost:3000/itinerary'; // Adjust API URL if needed
+
+  private http = inject(HttpClient); // Angular 15 inject function
+
+  // Get all itineraries
+  getItineraries(): Observable<Itinerary[]> {
+    return this.http.get<Itinerary[]>(this.apiUrl).pipe(
+      map(response => response ?? []), // Ensure response is an array
+      catchError(this.handleError)
+    );
+  }
+
+  // Add a new itinerary
+  addItinerary(itinerary: Itinerary): Observable<Itinerary> {
+    console.log('Adding itinerary:', itinerary);
+    return this.http.post<Itinerary>(this.apiUrl, itinerary).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Update an existing itinerary
+  updateItinerary(itineraryId: string, itinerary: Itinerary): Observable<Itinerary> {
+    console.log(`Updating itinerary (ID: ${itineraryId}):`, itinerary);
+    return this.http.put<Itinerary>(`${this.apiUrl}/${itineraryId}`, itinerary).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Delete an itinerary
+  deleteItinerary(itineraryId: string): Observable<void> {
+    console.log(`Deleting itinerary (ID: ${itineraryId})`);
+    return this.http.delete<void>(`${this.apiUrl}/${itineraryId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // General error handling
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Something went wrong, please try again later.';
+
+    if (error.error instanceof ErrorEvent) {
+      console.error('Client-side error:', error.error.message);
+      errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      console.error(`Backend error ${error.status}:`, error.error);
+      errorMessage = `Error ${error.status}: ${error.error?.message || 'Unknown error'}`;
+    }
+
+    return throwError(() => new Error(errorMessage));
+  }
+}
