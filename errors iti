@@ -1,45 +1,38 @@
-
-
-.container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-  }
-  
-  button {
-    display: block;
-    margin: 10px auto;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    background: white;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+ openAddForm(): void {
+    this.selectedItinerary = { id: '', startDate: '', endDate: '' };
+    this.isEditing = false;
+    this.showForm = true;
   }
 
-need good UI
+
+<button (click)="openAddForm()">Add New Itinerary</button>
+
+"itinerary": [
+    {
+      "id": "a189",
+      "destinationId": "1",
+      "attractions": [
+        "Sacred Monkey Forest"
+      ],
+      "lodging": [
+        "Luxury Resort"
+      ],
+      "dining": [
+        "Bali Cafe"
+      ],
+      "activities": [
+        "Surfing"
+      ],
+      "startDate": "2025-04-01",
+      "endDate": "2025-04-10"
+    },
+    {
+      "id": "38af",
+      "name": "hello",
+      "description": "hi",
+      "startDate": "2025-04-17",
+      "endDate": "2025-04-30"
+    }
+  ]
+
+i want all these in to be added by admin
