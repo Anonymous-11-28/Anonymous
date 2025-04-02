@@ -1,3 +1,5 @@
+services
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -136,3 +138,50 @@ export class AdminItinerariesService {
     return throwError(() => new Error(errorMessage));
   }
 }
+
+
+
+HTML 
+
+<div class="container">
+  <h2>Manage Itineraries</h2>
+
+  <!-- Add/Edit Itinerary Form -->
+  <form (submit)="onSubmit()" class="itinerary-form">
+    <input type="text" [(ngModel)]="itinerary.title" name="title" placeholder="Title" required />
+    <input type="text" [(ngModel)]="itinerary.destination" name="destination" placeholder="Destination" required />
+    <textarea [(ngModel)]="itinerary.description" name="description" placeholder="Description" required></textarea>
+    <input type="date" [(ngModel)]="itinerary.startDate" name="startDate" required />
+    <input type="date" [(ngModel)]="itinerary.endDate" name="endDate" required />
+    <button type="submit" class="btn btn-primary">
+      {{ isEditing ? 'Update Itinerary' : 'Add Itinerary' }}
+    </button>
+  </form>
+
+  <!-- Itineraries Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Destination</th>
+        <th>Description</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of itineraries">
+        <td>{{ item.title }}</td>
+        <td>{{ item.destination }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.startDate }}</td>
+        <td>{{ item.endDate }}</td>
+        <td>
+          <button (click)="editItinerary(item)" class="btn btn-edit">Edit</button>
+          <button (click)="deleteItinerary(item.id)" class="btn btn-delete">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
