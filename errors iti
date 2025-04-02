@@ -1,56 +1,45 @@
-Compiled with problems:X
-
-ERROR in ./src/app/components/itinerary/itinerary.component.ts 361:102-121
-
-export 'ItineraryService' (imported as 'i2') was not found in '../../services/itinerary.service' (possible exports: AdminItineraryService)
 
 
-ERROR
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  button {
+    display: block;
+    margin: 10px auto;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    background: white;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
 
-src/app/app.module.ts:53:5 - error NG6001: The class 'AdminItineraryComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator.
-
-53     AdminItineraryComponent,
-       ~~~~~~~~~~~~~~~~~~~~~~~
-
-  src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:9:14
-    9 export class AdminItineraryComponent implements OnInit {
-                   ~~~~~~~~~~~~~~~~~~~~~~~
-    'AdminItineraryComponent' is declared here.
-
-
-ERROR
-
-src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:6:16 - error NG2008: Could not find template file './admin-itinerary.component.html'.
-
-6   templateUrl: './admin-itinerary.component.html',
-                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-ERROR
-
-src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:41:69 - error TS2339: Property 'subscribe' does not exist on type 'void'.
-
-41       this.itineraryService.updateItinerary(this.selectedItinerary).subscribe(() => {
-                                                                       ~~~~~~~~~
-
-
-ERROR
-
-src/app/components/admin-components/admin-itineraries/admin-itineraries.component.ts:47:29 - error TS2339: Property 'addItinerary' does not exist on type 'AdminItineraryService'.
-
-47       this.itineraryService.addItinerary(this.selectedItinerary).subscribe(() => {
-                               ~~~~~~~~~~~~
-
-
-ERROR
-
-src/app/components/itinerary/itinerary.component.ts:3:10 - error TS2724: '"../../services/itinerary.service"' has no exported member named 'ItineraryService'. Did you mean 'AdminItineraryService'?
-
-3 import { ItineraryService } from '../../services/itinerary.service';
-           ~~~~~~~~~~~~~~~~
-
-  src/app/services/itinerary.service.ts:9:14
-    9 export class AdminItineraryService {
-                   ~~~~~~~~~~~~~~~~~~~~~
-    'AdminItineraryService' is declared here.
-
+need good UI
