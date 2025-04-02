@@ -304,3 +304,174 @@ HTML
     </tbody>
   </table>
 </div>
+
+
+service 
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminReviewsService {
+  private apiUrl = 'http://localhost:3000/destinations'; // JSON Server API
+
+  constructor(private http: HttpClient) {}
+
+  getAllReviews(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  deleteReview(destinationId: string, reviewId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${destinationId}`).pipe(
+      mergeMap(destination => {
+        destination.reviews = destination.reviews.filter((review: any) => review.id !== reviewId);
+        return this.http.put(`${this.apiUrl}/${destinationId}`, destination);
+      })
+    );
+  }
+
+  markReviewAsInappropriate(destinationId: string, reviewId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${destinationId}`).pipe(
+      mergeMap(destination => {
+        destination.reviews = destination.reviews.map((review: any) => {
+          if (review.id === reviewId) {
+            return { ...review, text: '[Marked as Inappropriate]' };
+          }
+          return review;
+        });
+        return this.http.put(`${this.apiUrl}/${destinationId}`, destination);
+      })
+    );
+  }
+}
+
+
+ts
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminReviewsService } from '../../../services/admin-reviews.service';
+
+@Component({
+  selector: 'app-admin-reviews',
+  templateUrl: './admin-reviews.component.html',
+  styleUrls: ['./admin-reviews.component.css']
+})
+export class AdminReviewsComponent implements OnInit {
+  reviews: any[] = []; // No need for a model
+
+  constructor(private reviewsService: AdminReviewsService) {}
+
+  ngOnInit(): void {
+    this.loadReviews();
+  }
+
+  loadReviews(): void {
+    this.reviewsService.getAllReviews().subscribe((destinations) => {
+      this.reviews = [];
+      destinations.forEach((destination) => {
+        if (destination.reviews) {
+          destination.reviews.forEach((review) => {
+            this.reviews.push({
+              ...review,
+              destinationId: destination.id,
+              destinationName: destination.name
+            });
+          });
+        }
+      });
+    });
+  }
+
+  deleteReview(destinationId: string, reviewId: string): void {
+    this.reviewsService.deleteReview(destinationId, reviewId).subscribe(() => {
+      this.loadReviews();
+    });
+  }
+
+  markAsInappropriate(destinationId: string, reviewId: string): void {
+    this.reviewsService.markReviewAsInappropriate(destinationId, reviewId).subscribe(() => {
+      this.loadReviews();
+    });
+  }
+}
+
+
+html 
+
+
+
+<div class="admin-reviews-container">
+  <h2>Manage Reviews</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Destination</th>
+        <th>User</th>
+        <th>Rating</th>
+        <th>Review</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let review of reviews">
+        <td>{{ review.destinationName }}</td>
+        <td>{{ review.userId }}</td>
+        <td>{{ review.rating }} ⭐</td>
+        <td>{{ review.text }}</td>
+        <td>
+          <button (click)="markAsInappropriate(review.destinationId, review.id)" class="btn btn-warning">Mark Inappropriate</button>
+          <button (click)="deleteReview(review.destinationId, review.id)" class="btn btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+css 
+
+
+.admin-reviews-container {
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.btn {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-warning {
+  background-color: orange;
+  color: white;
+}
+
+.btn-danger {
+  background-color: red;
+  color: white;
+}
