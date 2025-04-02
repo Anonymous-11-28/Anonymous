@@ -233,3 +233,73 @@ export class AdminItineraryService {
   }
 }
 
+
+
+html updated
+
+
+<div class="itinerary-container">
+  <h2>Manage Itineraries</h2>
+  <button (click)="openAddForm()" class="add-btn">Add New Itinerary</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Destination ID</th>
+        <th>Attractions</th>
+        <th>Lodging</th>
+        <th>Dining</th>
+        <th>Activities</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let itinerary of itineraries">
+        <td>{{ itinerary.destinationId }}</td>
+        <td>{{ itinerary.attractions.join(', ') }}</td>
+        <td>{{ itinerary.lodging.join(', ') }}</td>
+        <td>{{ itinerary.dining.join(', ') }}</td>
+        <td>{{ itinerary.activities.join(', ') }}</td>
+        <td>{{ itinerary.startDate }}</td>
+        <td>{{ itinerary.endDate }}</td>
+        <td>
+          <button (click)="openEditForm(itinerary)" class="edit-btn">Edit</button>
+          <button (click)="deleteItinerary(itinerary.id)" class="delete-btn">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Form Section -->
+  <div *ngIf="showForm" class="form-container">
+    <h3>{{ isEditing ? 'Edit Itinerary' : 'Add Itinerary' }}</h3>
+    
+    <form [formGroup]="itineraryForm" (ngSubmit)="saveItinerary()">
+      <label>Destination ID:</label>
+      <input formControlName="destinationId" required />
+
+      <label>Attractions (comma separated):</label>
+      <input formControlName="attractions" required />
+
+      <label>Lodging (comma separated):</label>
+      <input formControlName="lodging" required />
+
+      <label>Dining (comma separated):</label>
+      <input formControlName="dining" required />
+
+      <label>Activities (comma separated):</label>
+      <input formControlName="activities" required />
+
+      <label>Start Date:</label>
+      <input type="date" formControlName="startDate" required />
+
+      <label>End Date:</label>
+      <input type="date" formControlName="endDate" required />
+
+      <button type="submit" class="save-btn">Save</button>
+      <button type="button" (click)="closeForm()" class="cancel-btn">Cancel</button>
+    </form>
+  </div>
+</div>
