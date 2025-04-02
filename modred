@@ -1,0 +1,73 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';  // Ensure correct routing module is imported
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';  // For forms
+import { HttpClientModule } from '@angular/common/http';  // To handle HTTP requests
+
+// Core Components
+import { AppComponent } from './app.component';
+import { HomeComponent } from './components/home/home.component';
+import { DestinationDetailComponent } from './components/destination-detail/destination-detail.component';
+import { DestinationListComponent } from './components/destination-list/destination-list.component';
+import { FavoriteComponent } from './components/favorites/favorites.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { ReviewsComponent } from './reviews/reviews.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { TravelGroupComponent } from './components/travel-group/travel-group.component';
+import { ItineraryComponent } from './components/itinerary/itinerary.component';
+
+// Admin Components
+import { AdminLoginComponent } from './components/admin-components/admin-login/admin-login.component';
+import { AdminDashboardComponent } from './components/admin-components/admin-dashboard/admin-dashboard.component';
+import { AdminDestinationsComponent } from './components/admin-components/admin-destinations/admin-destinations.component';
+// import { AdminItinerariesComponent } from './components/admin-components/admin-itineraries/admin-itineraries.component';
+import { AdminReviewsComponent } from './components/admin-components/admin-reviews/admin-reviews.component';
+import { AdminNavbarComponent } from './components/admin-components/admin-navbar/admin-navbar.component';
+import { AddDestinationComponent } from './components/admin-components/admin-destinations/add-destination/add-destination.component';
+import { EditDestinationComponent } from './components/admin-components/admin-destinations/edit-destination/edit-destination.component';
+
+// Services
+import { AuthService } from './services/auth.service';
+import { FavoriteServiceService } from './services/favorites.service';  // Added FavoriteService import
+
+@NgModule({
+  declarations: [
+    // Core Components
+    AppComponent,
+    HomeComponent,
+    DestinationDetailComponent,
+    DestinationListComponent,
+    FavoriteComponent,
+    NavbarComponent,
+    ReviewsComponent,
+    LoginComponent,
+    RegisterComponent,
+    TravelGroupComponent,
+    ItineraryComponent,
+
+    // Admin Components
+    AdminLoginComponent,
+    AdminDashboardComponent,
+    AdminDestinationsComponent,
+    // AdminItinerariesComponent,
+    AdminReviewsComponent,
+    AdminNavbarComponent,
+    AddDestinationComponent,
+    EditDestinationComponent,
+  ],
+  imports: [
+    // Modules
+    BrowserModule,            // Core Angular module for bootstrapping
+    AppRoutingModule,         // Routing module to handle app routing
+    FormsModule,              // Forms module for template-driven forms
+    HttpClientModule,         // HTTP Client module for making HTTP requests
+    ReactiveFormsModule,      // Reactive forms for form control
+  ],
+  providers: [
+    AuthService,              // AuthService for handling authentication
+    FavoriteServiceService,   // Added FavoriteServiceService to providers list
+  ],
+  bootstrap: [AppComponent],  // Bootstrapping the root component
+})
+export class AppModule { }
