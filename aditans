@@ -1,1 +1,196 @@
+HTML 
+
+<div class="admin-container">
+  <h2>Admin Itineraries</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Destination</th>
+        <th>Attractions</th>
+        <th>Lodging</th>
+        <th>Dining</th>
+        <th>Activities</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let itinerary of adminItineraries">
+        <td>{{ itinerary.id }}</td>
+        <td>{{ getDestinationName(itinerary.destinationId) }}</td>
+        <td>{{ itinerary.attractions?.join(', ') || 'N/A' }}</td>
+        <td>{{ itinerary.lodging?.join(', ') || 'N/A' }}</td>
+        <td>{{ itinerary.dining?.join(', ') || 'N/A' }}</td>
+        <td>{{ itinerary.activities?.join(', ') || 'N/A' }}</td>
+        <td>{{ itinerary.startDate }}</td>
+        <td>{{ itinerary.endDate }}</td>
+        <td>
+          <button class="edit-btn" (click)="editItinerary(itinerary)">Edit</button>
+          <button class="delete-btn" (click)="deleteItinerary(itinerary.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+CSS 
+
+
+.admin-container {
+  width: 95%;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #343a40;
+  color: white;
+}
+
+button {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+
+.edit-btn {
+  background: #28a745;
+  color: white;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+service 
+
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItineraryService {
+  private apiUrl = 'http://localhost:3000/itinerary';
+
+  constructor(private http: HttpClient) {}
+
+  getAdminItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  deleteItinerary(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  updateItinerary(id: string, itinerary: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, itinerary);
+  }
+}
+
+ts
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItineraryService } from '../services/admin-itinerary.service';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'app-admin-itinerary',
+  templateUrl: './admin-itinerary.component.html',
+  styleUrls: ['./admin-itinerary.component.css']
+})
+export class AdminItineraryComponent implements OnInit {
+  adminItineraries: any[] = [];
+  destinations: any[] = [];
+  isAdmin: boolean = false;
+
+  constructor(private adminItineraryService: AdminItineraryService, private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.checkAdminAccess();
+    this.loadItineraries();
+    this.loadDestinations();
+  }
+
+  checkAdminAccess(): void {
+    const adminUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+    this.isAdmin = adminUser?.role === 'admin';
+  }
+
+  loadItineraries(): void {
+    if (this.isAdmin) {
+      this.adminItineraryService.getAdminItineraries().subscribe((data) => {
+        this.adminItineraries = data;
+      });
+    }
+  }
+
+  loadDestinations(): void {
+    this.http.get<any[]>('http://localhost:3000/destinations').subscribe((data) => {
+      this.destinations = data;
+    });
+  }
+
+  getDestinationName(destinationId: string): string {
+    const destination = this.destinations.find(d => d.id === destinationId);
+    return destination ? destination.name : 'Unknown';
+  }
+
+  deleteItinerary(id: string): void {
+    if (confirm('Are you sure you want to delete this itinerary?')) {
+      this.adminItineraryService.deleteItinerary(id).subscribe(() => {
+        this.adminItineraries = this.adminItineraries.filter(it => it.id !== id);
+      });
+    }
+  }
+
+  editItinerary(itinerary: any): void {
+    const newStartDate = prompt('Enter new Start Date:', itinerary.startDate);
+    const newEndDate = prompt('Enter new End Date:', itinerary.endDate);
+
+    if (newStartDate && newEndDate) {
+      const updatedItinerary = { ...itinerary, startDate: newStartDate, endDate: newEndDate };
+      this.adminItineraryService.updateItinerary(itinerary.id, updatedItinerary).subscribe(() => {
+        this.loadItineraries();
+      });
+    }
+  }
+}
 
