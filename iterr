@@ -1,0 +1,197 @@
+ "itinerary": [
+    {
+      "id": "a189",
+      "destinationId": "1",
+      "attractions": [
+        "Sacred Monkey Forest"
+      ],
+      "lodging": [
+        "Luxury Resort"
+      ],
+      "dining": [
+        "Bali Cafe"
+      ],
+      "activities": [
+        "Surfing"
+      ],
+      "startDate": "2025-04-01",
+      "endDate": "2025-04-10"
+    }
+  ]
+
+this function not working
+
+
+
+html 
+
+
+
+<div class="container">
+    <h2>Manage Itineraries</h2>
+    <button (click)="openAddForm()" class="add-btn">Add New Itinerary</button>
+  
+    <!-- Itinerary List -->
+    <table class="itinerary-table">
+      <thead>
+        <tr>
+          <th>Destination ID</th>
+          <th>Attractions</th>
+          <th>Lodging</th>
+          <th>Dining</th>
+          <th>Activities</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let itinerary of itineraries">
+          <td>{{ itinerary.destinationId }}</td>
+          <td>{{ itinerary.attractions.join(', ') }}</td>
+          <td>{{ itinerary.lodging.join(', ') }}</td>
+          <td>{{ itinerary.dining.join(', ') }}</td>
+          <td>{{ itinerary.activities.join(', ') }}</td>
+          <td>{{ itinerary.startDate }}</td>
+          <td>{{ itinerary.endDate }}</td>
+          <td>
+            <button (click)="openEditForm(itinerary)">Edit</button>
+            <button (click)="deleteItinerary(itinerary.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- Itinerary Form -->
+    <div *ngIf="showForm" class="form-container">
+      <form [formGroup]="itineraryForm" (ngSubmit)="saveItinerary()">
+        <label>Destination ID:</label>
+        <input type="text" formControlName="destinationId" required />
+  
+        <label>Attractions (comma-separated):</label>
+        <input type="text" formControlName="attractions" />
+  
+        <label>Lodging:</label>
+        <input type="text" formControlName="lodging" />
+  
+        <label>Dining:</label>
+        <input type="text" formControlName="dining" />
+  
+        <label>Activities:</label>
+        <input type="text" formControlName="activities" />
+  
+        <label>Start Date:</label>
+        <input type="date" formControlName="startDate" required />
+  
+        <label>End Date:</label>
+        <input type="date" formControlName="endDate" required />
+  
+        <button type="submit">{{ isEditing ? 'Update' : 'Add' }} Itinerary</button>
+        <button type="button" (click)="closeForm()">Cancel</button>
+      </form>
+    </div>
+  </div>
+  <br><br><br><br>
+
+
+
+ts
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AdminItineraryService } from '../../../services/admin-services/admin-itineraries.service';
+
+interface Itinerary {
+  id: string;
+  destinationId: string;
+  attractions: string[];
+  lodging: string[];
+  dining: string[];
+  activities: string[];
+  startDate: string;
+  endDate: string;
+}
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItinerariesComponent implements OnInit {
+  itineraries: Itinerary[] = [];
+  showForm = false;
+  isEditing = false;
+  itineraryForm: FormGroup;
+  selectedItineraryId: string = '';
+
+  constructor(private fb: FormBuilder, private adminItineraryService: AdminItineraryService) {
+    this.itineraryForm = this.fb.group({
+      destinationId: ['', Validators.required],
+      attractions: [''],
+      lodging: [''],
+      dining: [''],
+      activities: [''],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  // Load all itineraries
+  loadItineraries(): void {
+    this.adminItineraryService.getItineraries().subscribe((data) => {
+      this.itineraries = data;
+    });
+  }
+
+  // Open Add Form
+  openAddForm(): void {
+    this.itineraryForm.reset();
+    this.isEditing = false;
+    this.showForm = true;
+  }
+
+  // Open Edit Form
+  openEditForm(itinerary: Itinerary): void {
+    this.selectedItineraryId = itinerary.id;
+    this.itineraryForm.patchValue(itinerary);
+    this.isEditing = true;
+    this.showForm = true;
+  }
+
+  // Save or Update Itinerary
+  saveItinerary(): void {
+    const formData: Itinerary = {
+      id: this.isEditing ? this.selectedItineraryId : Math.random().toString(36).substr(2, 9),
+      ...this.itineraryForm.value
+    };
+
+    if (this.isEditing) {
+      this.adminItineraryService.updateItinerary(formData.id, formData).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    } else {
+      this.adminItineraryService.addItinerary(formData).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    }
+  }
+
+  // Delete Itinerary
+  deleteItinerary(id: string): void {
+    this.adminItineraryService.deleteItinerary(id).subscribe(() => {
+      this.itineraries = this.itineraries.filter(itinerary => itinerary.id !== id);
+    });
+  }
+
+  // Close Form
+  closeForm(): void {
+    this.showForm = false;
+  }
+}
