@@ -36,3 +36,200 @@
   ]
 
 i want all these in to be added by admin
+
+
+
+
+
+
+ts 
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminItineraryService } from '../../services/admin-itinerary.service';
+
+interface Itinerary {
+  id: string;
+  destinationId: string;
+  attractions: string[];
+  lodging: string[];
+  dining: string[];
+  activities: string[];
+  startDate: string;
+  endDate: string;
+}
+
+@Component({
+  selector: 'app-admin-itinerary',
+  templateUrl: './admin-itinerary.component.html',
+  styleUrls: ['./admin-itinerary.component.css']
+})
+export class AdminItineraryComponent implements OnInit {
+  itineraries: Itinerary[] = [];
+  showForm = false;
+  isEditing = false;
+  selectedItinerary: Itinerary = {
+    id: '',
+    destinationId: '',
+    attractions: [],
+    lodging: [],
+    dining: [],
+    activities: [],
+    startDate: '',
+    endDate: ''
+  };
+
+  constructor(private adminItineraryService: AdminItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.adminItineraryService.getItineraries().subscribe((data) => {
+      this.itineraries = data;
+    });
+  }
+
+  openAddForm(): void {
+    this.selectedItinerary = {
+      id: '',
+      destinationId: '',
+      attractions: [],
+      lodging: [],
+      dining: [],
+      activities: [],
+      startDate: '',
+      endDate: ''
+    };
+    this.isEditing = false;
+    this.showForm = true;
+  }
+
+  openEditForm(itinerary: Itinerary): void {
+    this.selectedItinerary = { ...itinerary };
+    this.isEditing = true;
+    this.showForm = true;
+  }
+
+  saveItinerary(): void {
+    if (this.isEditing) {
+      this.adminItineraryService.updateItinerary(this.selectedItinerary.id, this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    } else {
+      this.selectedItinerary.id = Math.random().toString(36).substr(2, 9); // Generate a random ID
+      this.adminItineraryService.addItinerary(this.selectedItinerary).subscribe(() => {
+        this.loadItineraries();
+        this.showForm = false;
+      });
+    }
+  }
+
+  deleteItinerary(id: string): void {
+    this.adminItineraryService.deleteItinerary(id).subscribe(() => {
+      this.itineraries = this.itineraries.filter(itinerary => itinerary.id !== id);
+    });
+  }
+}
+
+
+
+html 
+
+
+<div class="itinerary-container">
+  <h2>Manage Itineraries</h2>
+  <button (click)="openAddForm()" class="add-btn">Add New Itinerary</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Destination ID</th>
+        <th>Attractions</th>
+        <th>Lodging</th>
+        <th>Dining</th>
+        <th>Activities</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let itinerary of itineraries">
+        <td>{{ itinerary.destinationId }}</td>
+        <td>{{ itinerary.attractions.join(', ') }}</td>
+        <td>{{ itinerary.lodging.join(', ') }}</td>
+        <td>{{ itinerary.dining.join(', ') }}</td>
+        <td>{{ itinerary.activities.join(', ') }}</td>
+        <td>{{ itinerary.startDate }}</td>
+        <td>{{ itinerary.endDate }}</td>
+        <td>
+          <button (click)="openEditForm(itinerary)" class="edit-btn">Edit</button>
+          <button (click)="deleteItinerary(itinerary.id)" class="delete-btn">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="showForm" class="form-container">
+    <h3>{{ isEditing ? 'Edit Itinerary' : 'Add Itinerary' }}</h3>
+    <label>Destination ID:</label>
+    <input [(ngModel)]="selectedItinerary.destinationId" />
+
+    <label>Attractions (comma separated):</label>
+    <input [(ngModel)]="selectedItinerary.attractions" (change)="selectedItinerary.attractions = $event.target.value.split(',')" />
+
+    <label>Lodging (comma separated):</label>
+    <input [(ngModel)]="selectedItinerary.lodging" (change)="selectedItinerary.lodging = $event.target.value.split(',')" />
+
+    <label>Dining (comma separated):</label>
+    <input [(ngModel)]="selectedItinerary.dining" (change)="selectedItinerary.dining = $event.target.value.split(',')" />
+
+    <label>Activities (comma separated):</label>
+    <input [(ngModel)]="selectedItinerary.activities" (change)="selectedItinerary.activities = $event.target.value.split(',')" />
+
+    <label>Start Date:</label>
+    <input type="date" [(ngModel)]="selectedItinerary.startDate" />
+
+    <label>End Date:</label>
+    <input type="date" [(ngModel)]="selectedItinerary.endDate" />
+
+    <button (click)="saveItinerary()" class="save-btn">Save</button>
+    <button (click)="showForm = false" class="cancel-btn">Cancel</button>
+  </div>
+</div>
+
+service 
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItineraryService {
+  private apiUrl = 'http://localhost:3000/itinerary';
+
+  constructor(private http: HttpClient) {}
+
+  getItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  addItinerary(itinerary: any): Observable<any> {
+    return this.http.post(this.apiUrl, itinerary);
+  }
+
+  updateItinerary(id: string, itinerary: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, itinerary);
+  }
+
+  deleteItinerary(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+}
+
