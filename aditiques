@@ -913,3 +913,33 @@ db:
     }
   ]
 }
+
+http://localhost:3000/itinerary
+
+[
+  {
+    "id": "a189",
+    "destinationId": "1",
+    "attractions": [
+      "Sacred Monkey Forest"
+    ],
+    "lodging": [
+      "Luxury Resort"
+    ],
+    "dining": [
+      "Bali Cafe"
+    ],
+    "activities": [
+      "Surfing"
+    ],
+    "startDate": "2025-04-01",
+    "endDate": "2025-04-10"
+  },
+  {
+    "id": "38af",
+    "name": "hello",
+    "description": "hi",
+    "startDate": "2025-04-17",
+    "endDate": "2025-04-30"
+  }
+]
