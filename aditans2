@@ -1,2 +1,118 @@
+ts
 
+import { Component, OnInit } from '@angular/core';
+import { ItineraryService } from '../services/itinerary.service';
+import { Itinerary } from '../models/itinerary.model';
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItinerariesComponent implements OnInit {
+  itineraries: Itinerary[] = [];
+
+  constructor(private itineraryService: ItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.itineraryService.getItineraries().subscribe(data => {
+      this.itineraries = data;
+    });
+  }
+
+  deleteItinerary(id: string): void {
+    this.itineraryService.deleteItinerary(id).subscribe(() => {
+      this.loadItineraries();
+    });
+  }
+}
+
+HTML 
+<div class="container">
+  <h2>Manage Itineraries</h2>
+  <button (click)="loadItineraries()">Refresh</button>
+  <ul>
+    <li *ngFor="let itinerary of itineraries">
+      <h3>{{ itinerary.id }}</h3>
+      <p>Start Date: {{ itinerary.startDate }}</p>
+      <p>End Date: {{ itinerary.endDate }}</p>
+      <button (click)="deleteItinerary(itinerary.id)">Delete</button>
+    </li>
+  </ul>
+</div>
+
+CSS 
+
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: white;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+service 
+
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Itinerary } from '../models/itinerary.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ItineraryService {
+  private apiUrl = 'http://localhost:3000/itinerary';
+
+  constructor(private http: HttpClient) {}
+
+  getItineraries(): Observable<Itinerary[]> {
+    return this.http.get<Itinerary[]>(this.apiUrl);
+  }
+
+  deleteItinerary(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}
 
