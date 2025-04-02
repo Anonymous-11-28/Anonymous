@@ -1,4 +1,18 @@
 
+
+Compiled with problems:X
+
+ERROR
+
+src/app/components/admin-components/admin-reviews/admin-reviews.component.ts:23:39 - error TS7006: Parameter 'review' implicitly has an 'any' type.
+
+23           destination.reviews.forEach(review => {
+
+
+
+
+
+
 service 
 
 
