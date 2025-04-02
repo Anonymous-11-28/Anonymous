@@ -1,0 +1,81 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+// User Components
+import { HomeComponent } from './components/home/home.component';
+import { DestinationListComponent } from './components/destination-list/destination-list.component';
+import { DestinationDetailComponent } from './components/destination-detail/destination-detail.component';
+import { FavoriteComponent } from './components/favorites/favorites.component';
+import { ReviewsComponent } from './reviews/reviews.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { ItineraryComponent } from './components/itinerary/itinerary.component';
+import { TravelGroupComponent } from './components/travel-group/travel-group.component';
+
+// Admin Components
+import { AdminDashboardComponent } from './components/admin-components/admin-dashboard/admin-dashboard.component';
+import { AdminDestinationsComponent } from './components/admin-components/admin-destinations/admin-destinations.component';
+import { AdminItinerariesComponent } from './components/admin-components/admin-itineraries/admin-itineraries.component';
+import { AdminReviewsComponent } from './components/admin-components/admin-reviews/admin-reviews.component';
+import { AdminLoginComponent } from './components/admin-components/admin-login/admin-login.component';
+import { AddDestinationComponent } from './components/admin-components/admin-destinations/add-destination/add-destination.component';
+import { EditDestinationComponent } from './components/admin-components/admin-destinations/edit-destination/edit-destination.component';
+
+// Admin Auth Guard
+import { AdminAuthGuard } from './guards/admin-guards/admin-auth.guard'; 
+
+// Define application routes
+const routes: Routes = [
+  // Default Route
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+
+  // User Routes
+  { path: 'home', component: HomeComponent },
+  { path: 'destinations', component: DestinationListComponent },
+  { path: 'destinations/:id', component: DestinationDetailComponent },
+  { path: 'favorites', component: FavoriteComponent },
+  { path: 'reviews', component: ReviewsComponent },
+  { path: 'itinerary', component: ItineraryComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'travelgroup', component: TravelGroupComponent },
+
+  // Admin Routes (Protected by AdminAuthGuard)
+  { 
+    path: 'admin/dashboard', 
+    component: AdminDashboardComponent, 
+    canActivate: [AdminAuthGuard] 
+  },
+  { 
+    path: 'admin/destinations', 
+    component: AdminDestinationsComponent, 
+    canActivate: [AdminAuthGuard] 
+  },
+  { 
+    path: 'admin/destinations/add', 
+    component: AddDestinationComponent, 
+    canActivate: [AdminAuthGuard] 
+  },
+  { 
+    path: 'admin/destinations/edit/:id', 
+    component: EditDestinationComponent, 
+    canActivate: [AdminAuthGuard] 
+  },
+  { 
+    path: 'admin/itineraries', 
+    component: AdminItinerariesComponent, 
+    canActivate: [AdminAuthGuard] 
+  },
+  { 
+    path: 'admin/reviews', 
+    component: AdminReviewsComponent, 
+    canActivate: [AdminAuthGuard] 
+  },
+  { path: 'admin/login', component: AdminLoginComponent } // No Auth Guard for login
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
