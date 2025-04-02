@@ -455,4 +455,24 @@ export class AdminItineraryService {
 
 check this one
 
+
+"itinerary": [
+    {
+      "id": "a189",
+      "destinationId": "1",
+      "attractions": [
+        "Sacred Monkey Forest"
+      ],
+      "lodging": [
+        "Luxury Resort"
+      ],
+      "dining": [
+        "Bali Cafe"
+      ],
+      "activities": [
+        "Surfing"
+      ],
+      "startDate": "2025-04-01",
+      "endDate": "2025-04-10"
+    },
   
