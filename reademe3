@@ -1,3 +1,5 @@
+iternaries ts
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ItineraryService } from '../services/itinerary.service';
@@ -138,5 +140,40 @@ export class ItineraryComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+}
+
+
+iternaries service 
+
+
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ItineraryService {
+  private apiUrl = 'http://localhost:3000/itineraries'; // Mock JSON server endpoint
+
+  constructor(private http: HttpClient) {}
+
+  getItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  addItinerary(itinerary: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, itinerary);
+  }
+
+  updateItinerary(id: number, itinerary: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, itinerary);
+  }
+
+  deleteItinerary(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }
