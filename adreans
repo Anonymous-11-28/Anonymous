@@ -1,1 +1,165 @@
 
+service 
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminReviewsService {
+  private apiUrl = 'http://localhost:3000/destinations'; // Update with your API endpoint
+
+  constructor(private http: HttpClient) {}
+
+  getAllReviews(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  deleteReview(destinationId: string, reviewId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${destinationId}/reviews/${reviewId}`);
+  }
+
+  markReviewAsInappropriate(destinationId: string, reviewId: string, updatedReview: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${destinationId}/reviews/${reviewId}`, updatedReview);
+  }
+}
+
+
+
+ts
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AdminReviewsService } from '../services/admin-reviews.service';
+
+@Component({
+  selector: 'app-admin-reviews',
+  templateUrl: './admin-reviews.component.html',
+  styleUrls: ['./admin-reviews.component.css']
+})
+export class AdminReviewsComponent implements OnInit {
+  reviews: any[] = [];
+
+  constructor(private reviewsService: AdminReviewsService) {}
+
+  ngOnInit(): void {
+    this.loadReviews();
+  }
+
+  loadReviews(): void {
+    this.reviewsService.getAllReviews().subscribe((destinations) => {
+      this.reviews = [];
+      destinations.forEach(destination => {
+        if (destination.reviews) {
+          destination.reviews.forEach(review => {
+            this.reviews.push({
+              ...review,
+              destinationName: destination.name
+            });
+          });
+        }
+      });
+    });
+  }
+
+  deleteReview(destinationId: string, reviewId: string): void {
+    this.reviewsService.deleteReview(destinationId, reviewId).subscribe(() => {
+      this.loadReviews();
+    });
+  }
+
+  markAsInappropriate(review: any): void {
+    const updatedReview = { ...review, text: '[Marked as Inappropriate]' };
+    this.reviewsService.markReviewAsInappropriate(review.destinationId, review.id, updatedReview).subscribe(() => {
+      this.loadReviews();
+    });
+  }
+}
+
+
+
+HTML 
+
+
+<div class="admin-reviews-container">
+  <h2>Manage Reviews</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Destination</th>
+        <th>User</th>
+        <th>Rating</th>
+        <th>Review</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let review of reviews">
+        <td>{{ review.destinationName }}</td>
+        <td>{{ review.userId }}</td>
+        <td>{{ review.rating }} ⭐</td>
+        <td>{{ review.text }}</td>
+        <td>
+          <button (click)="markAsInappropriate(review)" class="btn-warning">Mark Inappropriate</button>
+          <button (click)="deleteReview(review.destinationId, review.id)" class="btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+CSS 
+
+
+.admin-reviews-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 10px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #f4f4f4;
+}
+
+button {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-warning {
+  background: #ff9800;
+  color: white;
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+}
+
