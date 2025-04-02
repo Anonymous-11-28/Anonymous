@@ -861,3 +861,79 @@ form button:last-child {
   color: white;
 }
 
+
+
+updated css
+
+
+.container {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+.add-btn {
+  margin: 10px;
+  padding: 8px;
+  background: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.itinerary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.itinerary-table th, .itinerary-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.form-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: #ffffff; /* Keeping White Background */
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for better visibility */
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: left;
+}
+
+form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+form button:first-child {
+  background: blue;
+  color: white;
+}
+
+form button:last-child {
+  background: red;
+  color: white;
+}
+
+
