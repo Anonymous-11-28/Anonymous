@@ -566,3 +566,71 @@ css file:
   }
 }
 
+
+service file:
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminItinerariesService {
+  private apiUrl = 'http://localhost:3000/itinerary'; // API URL for itineraries
+
+  constructor(private http: HttpClient) {}
+
+  // Get all itineraries
+  getItineraries(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(response => response), // Modify this if the response has a wrapper
+      catchError(this.handleError)
+    );
+  }
+
+  // Add a new itinerary
+  addItinerary(itinerary: any): Observable<any> {
+    console.log('Sending POST request to add itinerary:', itinerary);  // Add debug logging
+    return this.http.post<any>(this.apiUrl, itinerary).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Edit an existing itinerary
+  updateItinerary(itineraryId: string, itinerary: any): Observable<any> {
+    console.log('Sending PUT request to update itinerary with ID:', itineraryId, itinerary); // Add debug logging
+    return this.http.put<any>(`${this.apiUrl}/${itineraryId}`, itinerary).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Delete an itinerary
+  deleteItinerary(itineraryId: string): Observable<any> {
+    console.log('Sending DELETE request for itinerary with ID:', itineraryId); // Add debug logging
+    return this.http.delete<any>(`${this.apiUrl}/${itineraryId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Error handling function
+  private handleError(error: any): Observable<never> {
+    let errorMessage = 'Something went wrong, please try again later.';
+    
+    if (error.error instanceof ErrorEvent) {
+      // Client-side or network error occurred
+      console.error('Client-side error:', error.error.message);
+      errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      // Backend error occurred
+      console.error(`Backend error: ${error.status}, body was: ${error.error}`);
+      errorMessage = `Backend error: ${error.status}, ${error.error?.message || 'Unknown error'}`;
+    }
+
+    // Display a user-friendly message (can be improved to show in UI)
+    return throwError(() => new Error(errorMessage));
+  }
+}
+
