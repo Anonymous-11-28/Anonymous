@@ -347,3 +347,58 @@ html updated
     </form>
   </div>
 </div>
+
+
+
+
+admin ts
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { AdminItineraryService } from '../../../services/admin-itinerary.service';
+
+@Component({
+  selector: 'app-admin-itineraries',
+  templateUrl: './admin-itineraries.component.html',
+  styleUrls: ['./admin-itineraries.component.css']
+})
+export class AdminItinerariesComponent implements OnInit {
+  itineraries: any[] = [];
+  showForm = false;
+  isEditing = false;
+
+  // Initialize itineraryForm
+  itineraryForm: FormGroup = new FormGroup({
+    destinationId: new FormControl(''),
+    attractions: new FormControl(''),
+    lodging: new FormControl(''),
+    dining: new FormControl(''),
+    activities: new FormControl(''),
+    startDate: new FormControl(''),
+    endDate: new FormControl('')
+  });
+
+  constructor(private adminItineraryService: AdminItineraryService) {}
+
+  ngOnInit(): void {
+    this.loadItineraries();
+  }
+
+  loadItineraries(): void {
+    this.adminItineraryService.getItineraries().subscribe((data) => {
+      this.itineraries = data;
+    });
+  }
+
+  openAddForm(): void {
+    this.isEditing = false;
+    this.itineraryForm.reset();
+    this.showForm = true;
+  }
+
+  closeForm(): void {
+    this.showForm = false;
+  }
+}
