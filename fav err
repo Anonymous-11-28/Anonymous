@@ -1,1 +1,488 @@
+db.josn
+
+{
+  "destinations": [
+    {
+      "id": "1",
+      "name": "Bali Destination Guide",
+      "description": "Explore the beauty of Bali with our comprehensive guide.",
+      "image": "assets/bali_indonesia.jpg",
+      "history": "Bali is an island in Indonesia known for its tropical beaches and rich culture.",
+      "culture": "Bali has a rich tradition in music, dance, and art, deeply influenced by Hindu culture.",
+      "attractions": [
+        "Uluwatu Temple",
+        "Sacred Monkey Forest",
+        "Mount Agung"
+      ],
+      "lodging": [
+        "Luxury Resort",
+        "Budget Hostel",
+        "Private Villas"
+      ],
+      "dining": [
+        "Bali Cafe",
+        "Seafood Restaurant",
+        "Local Street Food"
+      ],
+      "activities": [
+        "Surfing",
+        "Snorkeling",
+        "Yoga Retreats"
+      ],
+      "reviews": [
+        {
+          "id": "1",
+          "destinationId": "1",
+          "userId": "6185",
+          "rating": 5,
+          "text": "[Marked as Inappropriate]"
+        },
+        {
+          "id": "2",
+          "destinationId": "1",
+          "userId": "54ba",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Paris Destination Guide",
+      "description": "Discover the magic of Paris, the City of Lights.",
+      "image": "assets/paris_logo.png",
+      "history": "Paris is known for its history of art, fashion, and culture, with iconic landmarks like the Eiffel Tower.",
+      "culture": "The culture of Paris has a rich history in the arts, literature, and fashion, attracting people worldwide.",
+      "attractions": [
+        "Eiffel Tower",
+        "Louvre Museum",
+        "Notre-Dame Cathedral"
+      ],
+      "lodging": [
+        "Luxury Hotels",
+        "Affordable Hostels",
+        "Boutique Hotels"
+      ],
+      "dining": [
+        "Le Meurice",
+        "Café de Flore",
+        "Street Crêpes"
+      ],
+      "activities": [
+        "Sightseeing",
+        "Museums",
+        "Shopping"
+      ],
+      "reviews": [
+        {
+          "id": "3",
+          "destinationId": "2",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "4",
+          "destinationId": "2",
+          "userId": "aa6b",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    }
+  ],
+  "favorites": [
+    {
+      "userId": "6185",
+      "destinationIds": [
+        "1",
+        "2"
+      ],
+      "id": "dede"
+    }
+  ],
+  "viewDetails": [
+    {
+      "id": "123",
+      "destinationId": "1",
+      "title": "Bali Destination Guide",
+      "description": "Detailed information about Bali including history, culture, attractions, and recommendations.",
+      "reviews": [
+        {
+          "id": "1",
+          "destinationId": "1",
+          "userId": "6185",
+          "rating": 5,
+          "text": "Amazing guide, helped me plan my trip perfectly!"
+        },
+        {
+          "id": "2",
+          "destinationId": "1",
+          "userId": "54ba",
+          "rating": 4,
+          "text": "Great information but needs more details on activities."
+        }
+      ]
+    },
+    {
+      "id": "124",
+      "destinationId": "2",
+      "title": "Paris Destination Guide",
+      "description": "Explore Paris with the most up-to-date details on history, culture, attractions, and local tips.",
+      "reviews": [
+        {
+          "id": "5",
+          "destinationId": "2",
+          "userId": "aa6b",
+          "rating": 5,
+          "text": "Fantastic guide, perfect for first-time visitors to Paris!"
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "6185",
+      "name": "Sanjeev",
+      "email": "sanjeev@mail.com",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "aa6b",
+      "name": "Lavanya",
+      "email": "lavanya@mail.com",
+      "password": "pandu",
+      "role": "user"
+    },
+    {
+      "id": "54ba",
+      "name": "Pratiksha",
+      "email": "pratiksha@mail.com",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "b89b",
+      "name": "Snehal",
+      "email": "snehal@mail.com",
+      "password": "007",
+      "role": "user"
+    },
+    {
+      "id": "02c5",
+      "name": "sanjeev",
+      "email": "sanjeev@ma.com",
+      "password": "1234"
+    },
+    {
+      "id": "c5f3",
+      "name": "akila",
+      "email": "user@example.com",
+      "password": "1234"
+    },
+    {
+      "id": "d75f",
+      "name": "patu",
+      "email": "patu@gmail.com",
+      "password": "patu"
+    }
+  ],
+  "admins": [
+    {
+      "id": "admin123",
+      "name": "Admin User",
+      "email": "admin@mail.com",
+      "password": "admin",
+      "role": "admin"
+    }
+  ],
+  "travelgroup": [
+    {
+      "id": "8f8f",
+      "name": "Travel",
+      "description": "hhhjh",
+      "members": [
+        "user123"
+      ],
+      "destinationId": "1",
+      "isPrivate": true,
+      "creator": "user123",
+      "messages": [
+        {
+          "user": "user123",
+          "content": "fhgsha",
+          "timestamp": "2025-04-02T15:26:45.710Z"
+        }
+      ]
+    }
+  ],
+  "itinerary": [
+    {
+      "id": "a189",
+      "destinationId": "1",
+      "attractions": [
+        "Sacred Monkey Forest"
+      ],
+      "lodging": [
+        "Luxury Resort"
+      ],
+      "dining": [
+        "Bali Cafe"
+      ],
+      "activities": [
+        "Surfing"
+      ],
+      "startDate": "2025-04-01",
+      "endDate": "2025-04-10"
+    },
+    {
+      "id": "cvln1ub5g",
+      "destinationId": "2",
+      "attractions": [
+        "hello"
+      ],
+      "lodging": [
+        "hotel"
+      ],
+      "dining": [
+        "cafe"
+      ],
+      "activities": [
+        "na"
+      ],
+      "startDate": "2025-04-03",
+      "endDate": "2025-04-04"
+    }
+  ]
+}
+
+
+
+
+html
+
+
+<div class="jumbotron" style="margin-left: 400px; ">
+  <h3 class=" col-6 text-center m-4 p-3  text-black  " ><marquee behavior="left" direction="" style="color:gold">Plan your next with Travel Trove</marquee></h3>
+</div>
+  
+<div class="container ">
+ <div class=" d-flex justify-content-center   "  id="box">
+    <input  
+      type="text" 
+      [(ngModel)]="searchQuery" 
+      (input)="onSearch()" 
+      placeholder="Search for a destination..." 
+    
+      />
+  </div>
+
+
+  <!-- Show error message if there is an error -->
+  <p *ngIf="errorMessage" class="error text-danger text-center">
+    {{ errorMessage }}
+  </p>
+
+  <!-- Show results based on the search query -->
+  <div class="destination-cards" style="margin-top: 50px;">
+    <div *ngFor="let destination of filteredDestinations" class="destination-card">
+      <div class="card-img-top-container">
+
+
+        <!-- <img [src]="destination.image" alt="{{ destination.name }}" class="card-img-top"/> -->
+        <img 
+        *ngFor="let photo of destination.photos" 
+        [src]="photo" 
+        [alt]="destination.title" 
+        class="card-img-top" 
+        style="width: 100%; height: auto;" 
+      />
+      
+      
+      
+
+      </div>
+      
+      <div class="card-body">
+        <h3>{{ destination.title }}</h3>
+        <p>{{ destination.description }}</p>
+        
+        <ul>
+          <li *ngFor="let attraction of destination.attractions">{{ attraction }}</li>
+        </ul>
+         
+        <a [routerLink]="['/destinations', destination.id]" class="btn btn-info btn-sm mb-2"> View Details</a>  <br>
+        <button routerLink='favorites' class="btn btn-info btn-sm mb-2" (click)="addToFavorites(destination)" [disabled]="!isLoggedIn" style="width: 300px;"> Add To fav</button>
+          
+
+           <!-- <button class="btn btn-primary btn-sm" (click)="addToFavorites(destination)" [disabled]="!isLoggedIn">
+            Add to Favorites
+           </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+
+ts 
+
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonService } from 'src/common.service';
+
+interface Destination {
+  _id: string;
+  id: number;
+  title: string;
+  summary: string;
+  photos: string[];
+}
+
+// Define the response interface
+interface DestinationResponse {
+  destination: Destination[];  // 'destination' is an array of Destination objects
+}
+
+@Component({
+  selector: 'app-destination-list',
+  templateUrl: './destination-list.component.html',
+  styleUrls: ['./destination-list.component.css']
+})
+export class DestinationListComponent implements OnInit {
+
+  isLoggedIn = false;
+
+  searchQuery: string = ''; // Property for search input
+  filteredDestinations: any[] = []; // Property to store filtered results
+  errorMessage: string = ''; // Property to store error messages
+  destinations: any[] = []; // Property to store all fetched destinations
+  isSearchStarted: boolean = false;
+
+  constructor(
+    private com: CommonService, // Inject CommonService for destination data
+    private router: Router // Inject Router for navigation
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDestinations(); // Load destinations when the component initializes
+  }
+
+  // Method to fetch all destinations from the API
+  loadDestinations() {
+    this.com.getSearch().subscribe(
+      (data: any) => {
+        if (data && Array.isArray(data.destination)) {
+          this.destinations = data.destination; // Populate destinations with data from the API
+        } else {
+          this.errorMessage = 'Invalid data format from API'; // Handle invalid data format
+        }
+      },
+      (error) => {
+        this.errorMessage = 'Error fetching data from API'; // Handle API errors
+        console.error(error);
+      }
+    );
+  }
+
+  // Method to filter destinations based on the search query
+  onSearch(): void {
+    // Check if searchQuery is not empty after trimming spaces
+    if (this.searchQuery.trim()) {
+      this.isSearchStarted = true;
+
+      // If destinations array is empty, load the destinations first
+      if (this.destinations.length === 0) {
+        this.loadDestinations();
+      }
+
+      // Filter destinations based on the title or summary containing the search query
+      this.filteredDestinations = this.destinations.filter(destination =>
+        (destination.title && destination.title.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+        (destination.summary && destination.summary.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      );
+    } else {
+      // If the searchQuery is empty, reset filteredDestinations to an empty array
+      this.isSearchStarted = false;
+      this.filteredDestinations = [];
+    }
+  }
+
+  // Method to navigate to the image details page
+  imageDetailsComp(id: number): void {
+    this.router.navigate(['/image-details', id]); // Navigate to the image details page
+  }
+
+  // Method to add a destination to favorites
+  addToFavorites(destination: any) {
+    if (!this.isLoggedIn) {
+      alert('Please log in to add to favorites'); // Alert if the user is not logged in
+      return;
+    }
+    console.log('Adding to favorites:', destination); // Log the destination added to favorites
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  // Subscribe to login status using the authService
+    // this.authService.isLoggedIn$.subscribe((status: boolean) => {
+    //   this.isLoggedIn = status; // Update login status
+    // });
+
+    // Get the destinations data when the component initializes
+    // this.destinationService.getDestinations().subscribe(
+    //   (data) => {
+    //     this.destinationGuides = data; // Store the fetched destinations
+    //     this.filteredDestinations = data; // Initialize filtered destinations list
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching destinations:', error); // Handle any errors
+    //     alert('Failed to load destinations. Please try again later.');
+    //   }
+    // );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // addToFavorites(destination: any): void {
+  //   if (!this.isLoggedIn) {
+  //     alert('Please log in to add this destination to your favorites');
+  //     return; 
+  //   }
+
+  //   console.log('Adding to Favorites:', destination);
+
+   
+  // }
+
 
