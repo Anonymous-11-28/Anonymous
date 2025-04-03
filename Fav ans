@@ -1,3 +1,130 @@
+
+ts
+
+
+import { Component, OnInit } from '@angular/core';
+import { DestinationService } from '../services/destination.service';
+
+@Component({
+  selector: 'app-destination-list',
+  templateUrl: './destination-list.component.html',
+  styleUrls: ['./destination-list.component.css']
+})
+export class DestinationListComponent implements OnInit {
+  
+  destinations: any[] = [];
+  favorites: any[] = [];
+  searchQuery: string = ''; 
+  isSearchStarted: boolean = false;
+  filteredDestinations: any[] = [];
+  userId: string | null = null;
+
+  constructor(private destinationService: DestinationService) {}
+
+  ngOnInit(): void {
+    this.loadDestinations();
+    this.loadFavorites();
+    this.checkLoginStatus();
+  }
+
+  checkLoginStatus() {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.userId = JSON.parse(userData).id;
+    }
+  }
+
+  loadDestinations() {
+    this.destinationService.getDestinations().subscribe(
+      (data: any) => {
+        this.destinations = data;
+      },
+      (error) => {
+        console.error('Error fetching destinations:', error);
+      }
+    );
+  }
+
+  loadFavorites() {
+    this.destinationService.getFavorites().subscribe(
+      (data: any) => {
+        this.favorites = data;
+      },
+      (error) => {
+        console.error('Error fetching favorites:', error);
+      }
+    );
+  }
+
+  isFavorite(destinationId: string): boolean {
+    return this.favorites.some(fav => fav.id === destinationId);
+  }
+
+  addToFavorites(destination: any) {
+    if (!this.userId) {
+      alert('Please log in to add favorites');
+      return;
+    }
+
+    if (this.isFavorite(destination.id)) {
+      alert('Already in favorites!');
+      return;
+    }
+
+    const favorite = { id: destination.id, name: destination.name };
+    
+    this.destinationService.addToFavorites(favorite).subscribe(
+      () => {
+        this.favorites.push(favorite);
+        alert('Added to favorites successfully!');
+      },
+      (error) => {
+        console.error('Error adding to favorites:', error);
+        alert('Error adding to favorites.');
+      }
+    );
+  }
+
+  onSearch(): void {
+    if (this.searchQuery.trim()) {
+      this.isSearchStarted = true;
+      this.filteredDestinations = this.destinations.filter(destination =>
+        destination.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else {
+      this.isSearchStarted = false;
+      this.filteredDestinations = [];
+    }
+  }
+}
+
+
+html 
+
+
+<div class="destination-cards" style="margin-top: 50px;">
+  <div *ngFor="let destination of filteredDestinations.length ? filteredDestinations : destinations" class="destination-card">
+    
+    <div class="card-body">
+      <h3>{{ destination.name }}</h3>
+      <p>{{ destination.description }}</p>
+      
+      <a [routerLink]="['/destinations', destination.id]" class="btn btn-info btn-sm mb-2"> View Details</a>  
+      <br>
+
+      <button 
+        class="btn btn-info btn-sm mb-2" 
+        (click)="addToFavorites(destination)" 
+        [disabled]="isFavorite(destination.id)" 
+        style="width: 300px;">
+        {{ isFavorite(destination.id) ? 'Added to Favorites' : 'Add To Favorites' }}
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
 service 
 
 
@@ -9,162 +136,23 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class DestinationService {
-  private apiUrl = 'http://localhost:3000/destinations'; // API endpoint
+  private apiUrl = 'http://localhost:3000/destinations';
+  private favoritesUrl = 'http://localhost:3000/favorites';
 
   constructor(private http: HttpClient) {}
 
-  // Fetch all destinations
   getDestinations(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
-}
 
-
-
-ts
-
-
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { DestinationService } from '../services/destination.service';
-
-interface Destination {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  attractions: string[];
-  lodging: string[];
-  dining: string[];
-}
-
-@Component({
-  selector: 'app-destination-list',
-  templateUrl: './destination-list.component.html',
-  styleUrls: ['./destination-list.component.css']
-})
-export class DestinationListComponent implements OnInit {
-
-  isLoggedIn = false;
-  searchQuery: string = '';
-  filteredDestinations: Destination[] = [];
-  destinations: Destination[] = [];
-  errorMessage: string = '';
-
-  constructor(
-    private destinationService: DestinationService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.loadDestinations();
+  getFavorites(): Observable<any[]> {
+    return this.http.get<any[]>(this.favoritesUrl);
   }
 
-  // Fetch destinations from API
-  loadDestinations() {
-    this.destinationService.getDestinations().subscribe(
-      (data) => {
-        this.destinations = data;
-        this.filteredDestinations = data;
-      },
-      (error) => {
-        this.errorMessage = 'Error fetching destinations';
-        console.error(error);
-      }
-    );
-  }
-
-  // Search functionality
-  onSearch(): void {
-    if (this.searchQuery.trim()) {
-      this.filteredDestinations = this.destinations.filter(destination =>
-        destination.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        destination.description.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    } else {
-      this.filteredDestinations = this.destinations;
-    }
-  }
-
-  // Add to favorites
-  addToFavorites(destination: Destination) {
-    if (!this.isLoggedIn) {
-      alert('Please log in to add to favorites');
-      return;
-    }
-    console.log('Adding to favorites:', destination);
+  addToFavorites(destination: any): Observable<any> {
+    return this.http.post(this.favoritesUrl, destination);
   }
 }
 
 
 
-html 
-
-
-
-<div class="jumbotron text-center">
-  <h3 class="text-black">
-    <marquee behavior="left" style="color: gold;">Plan your next trip with Travel Trove</marquee>
-  </h3>
-</div>
-
-<div class="container">
-  <div class="d-flex justify-content-center">
-    <input  
-      type="text"
-      [(ngModel)]="searchQuery"
-      (input)="onSearch()"
-      placeholder="Search for a destination..."
-      class="form-control w-50"
-    />
-  </div>
-
-  <p *ngIf="errorMessage" class="error text-danger text-center">
-    {{ errorMessage }}
-  </p>
-
-  <div class="destination-cards mt-4">
-    <div *ngFor="let destination of filteredDestinations" class="card m-2">
-      <img [src]="destination.image" alt="{{ destination.name }}" class="card-img-top" />
-      
-      <div class="card-body">
-        <h3>{{ destination.name }}</h3>
-        <p>{{ destination.description }}</p>
-
-        <ul>
-          <li *ngFor="let attraction of destination.attractions">{{ attraction }}</li>
-        </ul>
-         
-        <a [routerLink]="['/destinations', destination.id]" class="btn btn-info btn-sm">View Details</a>
-        <button class="btn btn-warning btn-sm" (click)="addToFavorites(destination)" [disabled]="!isLoggedIn">Add to Favorites</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-css
-
-.card {
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  overflow: hidden;
-  width: 300px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-}
-
-.card-img-top {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.card-body {
-  padding: 15px;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
-}
