@@ -433,59 +433,6 @@ export class DestinationListComponent implements OnInit {
 
 
 
-
-
-
-
-
-
-
-
-  // Subscribe to login status using the authService
-    // this.authService.isLoggedIn$.subscribe((status: boolean) => {
-    //   this.isLoggedIn = status; // Update login status
-    // });
-
-    // Get the destinations data when the component initializes
-    // this.destinationService.getDestinations().subscribe(
-    //   (data) => {
-    //     this.destinationGuides = data; // Store the fetched destinations
-    //     this.filteredDestinations = data; // Initialize filtered destinations list
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching destinations:', error); // Handle any errors
-    //     alert('Failed to load destinations. Please try again later.');
-    //   }
-    // );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- // addToFavorites(destination: any): void {
-  //   if (!this.isLoggedIn) {
-  //     alert('Please log in to add this destination to your favorites');
-  //     return; 
-  //   }
-
-  //   console.log('Adding to Favorites:', destination);
-
-   
-  // }
-
-
 service 
 
 
