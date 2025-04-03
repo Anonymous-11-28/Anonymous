@@ -254,3 +254,71 @@
     }
   ]
 }
+
+
+fav ts
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators'; // Ensure `tap` is imported here
+
+// Define the structure of a favorite destination
+interface destinationGuides {
+  id: string;
+  title: string;
+  summary: string;
+  photos: string[];
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FavoriteServiceService {
+  private apiUrl = 'http://localhost:3000/favorites'; // Ensure this URL is correct
+  private favoritesSubject = new BehaviorSubject<destinationGuides[]>([]);
+  favorites$ = this.favoritesSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  // Get the favorites list for a user
+  getFavorites(userId: number): Observable<destinationGuides[]> {
+    // Make an HTTP GET request to fetch the favorites list
+    return this.http.get<destinationGuides[]>(`${this.apiUrl}/user/${userId}`).pipe(
+      tap((data: destinationGuides[]) => {
+        this.favoritesSubject.next(data); // Emit the updated favorites list
+      })
+    );
+  }
+
+  // Add a favorite destination
+  addFavorite(card: destinationGuides): void {
+    this.http.post(this.apiUrl, card).subscribe(
+      () => {
+        this.updateFavoritesList(); // Refresh the favorites list
+      },
+      (error) => {
+        console.error('Error adding favorite:', error); // Log any errors
+      }
+    );
+  }
+
+  // Remove a favorite destination
+  removeFavorite(card: destinationGuides): void {
+    this.http.delete(`${this.apiUrl}/${card.id}`).subscribe(
+      () => {
+        this.updateFavoritesList(); // Refresh the favorites list
+      },
+      (error) => {
+        console.error('Error removing favorite:', error); // Log any errors
+      }
+    );
+  }
+
+  // Helper method to reload the list of favorites
+  private updateFavoritesList(): void {
+    const userId = 1; // Adjust as needed (replace with dynamic userId as needed)
+    this.getFavorites(userId).subscribe(); // Update the favorites list
+  }
+}
+
